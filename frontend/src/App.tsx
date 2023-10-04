@@ -1,0 +1,46 @@
+import RequireAuth from './modules/common/requireauth';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './modules/common/views/layout';
+import PageNotFound from './modules/common/views/pagenotfound';
+import Login from './modules/auth/views/login';
+import Home from './modules/myoverview/views';
+
+const ROLES = {
+  User: 2001,
+  Editor: 1984,
+  Admin: 5150,
+};
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        {/* public routes */}
+        <Route path="login" element={<Login />} />
+
+        {/* we want to protect these routes */}
+        <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+
+        {/* <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />}>
+          <Route path="editor" element={<Editor />} />
+        </Route>
+
+
+        <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+          <Route path="admin" element={<Admin />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />}>
+          <Route path="lounge" element={<Lounge />} />
+        </Route> */}
+
+        {/* catch all */}
+        <Route path="*" element={<PageNotFound />} />
+      </Route>
+    </Routes>
+  );
+}
+
+export default App;
