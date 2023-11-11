@@ -57,6 +57,10 @@ class FigmaEmbedTool {
     };
   }
 
+  static get isReadOnlySupported() {
+    return true;
+  }
+
   private api: any;
   private config: FigmaEmbedToolConfig;
   private data: FigmaEmbedData;
@@ -126,7 +130,7 @@ class FigmaEmbedTool {
   }
 
   save() {
-    return this.data.url ? this.data.url : null;
+    return this.data;
   }
 }
 

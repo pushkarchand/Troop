@@ -11,14 +11,9 @@ export const defaultValue = {
     },
     {
       id: '12iM3lqzcm',
-      type: 'embed',
+      type: 'figmaEmbed',
       data: {
-        caption: '',
-        embed: 'https://www.youtube.com/embed/d56mG7DezGs?start=1678s',
-        height: 320,
-        service: 'youtube',
-        source: 'https://www.youtube.com/watch?v=d56mG7DezGs&t=1678s',
-        width: 580,
+        url: 'https://www.figma.com/file/2cuoiHi1GJc5rECdFdRnHc/Home?type=design&amp;node-id=0-1&amp;mode=design&amp;t=QX0B6NTZpn3Uaz3n-0',
       },
     },
     {
