@@ -38,7 +38,6 @@ const Login = () => {
             roles: [2001, 5150],
             accessToken: '',
           });
-          console.log('from', from);
           navigate(from, { replace: true });
         }}
         startIcon={<GoogleIcon />}
