@@ -1,3 +1,7 @@
+/**
+ * editorjs tools module declaration for typescript support
+ */
+
 declare module '@editorjs/list' {
   // Define any type information or interfaces needed for this module here.
 }
