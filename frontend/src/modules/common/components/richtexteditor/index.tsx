@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import EditorJS from '@editorjs/editorjs';
 import { EDITOR_JS_TOOLS } from './constants';

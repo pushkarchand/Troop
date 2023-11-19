@@ -19,6 +19,7 @@ const FigmaEmbed: React.FC<FigmaEmbedProps> = ({ figmaUrl }) => {
 
   return (
     <iframe
+      title="Figma Embed"
       style={{ border: '1px solid rgba(0, 0, 0, 0.1)' }}
       width="100%"
       height="450"
@@ -46,7 +47,7 @@ class FigmaEmbedTool {
     return {
       tags: ['FIGMA'],
       patterns: {
-        figma: /https:\/\/www\.figma\.com\/file\/([^\/]+)/i,
+        figma: /https:\/\/www\.figma\.com\/file\/([^/]+)/i,
       },
     };
   }
@@ -116,6 +117,7 @@ class FigmaEmbedTool {
 
       // Check if the URL starts with 'https://www.figma.com/file/'
       const figmaRegex =
+        // eslint-disable-next-line no-useless-escape
         /^https:\/\/www\.figma\.com\/(?:file|proto)\/([^\/?]+)/i;
       const match = url.match(figmaRegex);
       console.log({ url, match });

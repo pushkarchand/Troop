@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
 
 const PHONE = 420;
 const TABLET_POTRAIT = 420;
@@ -10,9 +10,7 @@ const media =
   (...args: Array<any>) =>
     css`
       @media only screen and max-width(${unit}px) {
-        ${css(
-          ...args
-        )}
+        ${css(...args)}
       }
     `;
 
@@ -21,9 +19,9 @@ export const tabletPotrait = media(TABLET_POTRAIT);
 export const tabletLandscape = media(TABLET_LANDSCAPE);
 export const desktop = media(DESKTOP);
 
-export default{
-    phone,
-    tabletLandscape,
-    tabletPotrait,
-    desktop
-}
+export default {
+  phone,
+  tabletLandscape,
+  tabletPotrait,
+  desktop,
+};

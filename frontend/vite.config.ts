@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-undef */
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
@@ -24,8 +24,8 @@ export default defineConfig({
   },
   base: '/',
   server: {
-    port: 3000,
+    port: 3001,
     host: true,
-    strictPort: true
+    strictPort: true,
   },
 });

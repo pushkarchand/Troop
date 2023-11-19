@@ -1,3 +1,4 @@
+import React from 'react';
 import RequireAuth from './modules/common/requireauth';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './modules/common/views/layout';
@@ -25,7 +26,10 @@ function App() {
         </Route>
         <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
           <Route path="/project" element={<Project />} />
-          <Route path="/project/:projectId/:section/:page/:subpage" element={<Project />} />
+          <Route
+            path="/project/:projectId/:section/:page/:subpage"
+            element={<Project />}
+          />
         </Route>
 
         {/* <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />}>
