@@ -16,18 +16,19 @@ html {
   overflow-y: none;
 }
 
-
-.ce-delimiter{
+.ce-delimiter {
   border-top: 2px solid #c2c2c2;
   margin: 10px 0;
 }
 
-.ce-delimiter::before{
+.ce-delimiter::before {
   display: block;
-  content: "";
+  content: '';
   line-height: 10px;
   height: 1px;
-  letter-spacing: 0.0;
+  letter-spacing: 0;
 }
 
-#editorjs{ width: 100%;}
+#editorjs {
+  width: 100%;
+}

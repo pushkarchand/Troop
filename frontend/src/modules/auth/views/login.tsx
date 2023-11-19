@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Button } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import Logo from '@assets/images/logo.svg';
-import MainCover from '@assets/images/maincover.png'
+import MainCover from '@assets/images/maincover.png';
 const LOGIN_URL = '/auth';
 
 const MainSection = styled.div`

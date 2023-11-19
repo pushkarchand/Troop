@@ -25,7 +25,10 @@ function App() {
         </Route>
         <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
           <Route path="/project" element={<Project />} />
-          <Route path="/project/:projectId/:section/:page/:subpage" element={<Project />} />
+          <Route
+            path="/project/:projectId/:section/:page/:subpage"
+            element={<Project />}
+          />
         </Route>
 
         {/* <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />}>

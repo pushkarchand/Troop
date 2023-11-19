@@ -11,7 +11,7 @@ import { Button } from '@mui/material';
 const MainContainer = styled.div`
   display: flex;
   box-sizing: borde-box;
-  flex-direction: column
+  flex-direction: column;
 `;
 
 const RightSection = styled.div`
@@ -41,7 +41,8 @@ const MyOverview = () => {
       <MainNavigation />
       <MainContainer>
         <div>MyOverview</div>
-        <Button variant="outlined"
+        <Button
+          variant="outlined"
           onClick={() => {
             navigate('/project/1/2/3/4');
           }}

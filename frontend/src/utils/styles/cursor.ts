@@ -36,16 +36,14 @@ export const text = css`
   cursor: text;
 `;
 
-export default{
-    initial,
-    pointer,
-    grab,
-    grabbing,
-    horizontalResize,
-    columnResize,
-    rowResize,
-    notAllowed,
-    text
-}
-
-
+export default {
+  initial,
+  pointer,
+  grab,
+  grabbing,
+  horizontalResize,
+  columnResize,
+  rowResize,
+  notAllowed,
+  text,
+};
