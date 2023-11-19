@@ -5,6 +5,7 @@ import Logo from '@assets/images/logo.svg';
 import { Avatar, MenuItem, Select } from '@mui/material';
 import UserAvatar from '@assets/images/avatar.png';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 const Header = styled.nav`
   display: flex;
   width: 100%;
@@ -34,11 +35,17 @@ type Props = {};
 function MainNavigation({}: Props) {
   const [options] = useState([1, 2, 3, 4]);
   const [value, setvalue] = useState(1);
-
+  const navigate = useNavigate();
   return (
     <Header>
       <LeftSection>
-        <MainLogo src={Logo} alt="main Logo" />
+        <MainLogo
+          src={Logo}
+          alt="main Logo"
+          onClick={() => {
+            navigate('/');
+          }}
+        />
         <Select
           value={value}
           onChange={(e) => {

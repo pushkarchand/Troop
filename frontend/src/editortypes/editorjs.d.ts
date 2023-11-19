@@ -1,3 +1,7 @@
+/**
+ * editorjs tools module declaration for typescript support
+ */
+
 declare module '@editorjs/list' {
   // Define any type information or interfaces needed for this module here.
 }
@@ -45,5 +49,9 @@ declare module '@editorjs/inline-code' {
   //  Define any type information or interfaces needed for this module here.
 }
 declare module '@editorjs/simple-image' {
+  //  Define any type information or interfaces needed for this module here.
+}
+
+declare module '@editorjs/attaches' {
   //  Define any type information or interfaces needed for this module here.
 }
