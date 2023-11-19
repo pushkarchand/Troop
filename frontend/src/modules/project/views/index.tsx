@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from '@context/authprovider';
-import ReichTextEditor from '@modules/common/components/richtexteditor';
+
 import MainNavigation from '@modules/common/components/mainnavigation';
 import SideBar from '@modules/common/components/sidebar';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
 import { useParams } from 'react-router-dom';
+import BasicTabs from '../components/tabs';
 
 const Container = styled.div`
   display: flex;
@@ -18,30 +19,46 @@ const Container = styled.div`
 
 const MainContainer = styled.div`
   display: flex;
-  box-sizing: borde-box;
+  box-sizing: border-box;
   height: 100%;
 `;
 
-const RightSection = styled.div`
+const HeaderSection = styled.div`
   display: flex;
-  width: 150px;
+  flex-direction: column;
+  width: 100%;
+  padding: ${spacing.large}px;
+  box-sizing: border-box;
+  gap: ${spacing.medium}px;
 `;
 
 const CenterSection = styled.div`
   display: flex;
-  flex: 1;
-  padding: ${spacing.small}px;
-  box-sizing: border-box;
-  padding: ${spacing.large}px;
-  overflow-y: auto;
+  flex-direction: column;
+  height: 100%;
+  width: calc(100% - 250px);
+`;
+
+const BorderlessInput = styled.input`
+  border: none;
+  outline: none;
+  padding: 8px;
+  font-size: 24px;
+`;
+
+const BorderlessTextarea = styled.textarea`
+  border: none;
+  outline: none;
+  padding: 8px;
 `;
 
 const Project = () => {
-  const { projectId, section, page, subpage } = useParams();
-
+  // const { projectId, section, page, subpage } = useParams();
+  const [name, setName] = useState('Button');
+  const [description, setDescription] = useState('');
   const { setAuth }: any = useContext(AuthContext);
   const navigate = useNavigate();
-  console.log('Project', { projectId, section, page, subpage });
+
   const logout = async () => {
     setAuth({});
     navigate('/');
@@ -53,9 +70,25 @@ const Project = () => {
       <MainContainer>
         <SideBar />
         <CenterSection>
-          <ReichTextEditor />
+          <HeaderSection>
+            <BorderlessInput
+              placeholder="Page"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
+            <BorderlessTextarea
+              placeholder="Add description"
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+            />
+          </HeaderSection>
+          <BasicTabs />
         </CenterSection>
-        <RightSection></RightSection>
+        {/* <RightSection></RightSection> */}
       </MainContainer>
     </Container>
   );
