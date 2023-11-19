@@ -17,6 +17,7 @@ module.exports = (app) => {
       });
       res.json(data);
     } catch (error) {
+      console.log(`/signup : ${error}`)
       res.status(500).json({ message: "Internal server error" });
     }
   });

@@ -51,3 +51,7 @@ declare module '@editorjs/inline-code' {
 declare module '@editorjs/simple-image' {
   //  Define any type information or interfaces needed for this module here.
 }
+
+declare module '@editorjs/attaches' {
+  //  Define any type information or interfaces needed for this module here.
+}

@@ -15,14 +15,14 @@ interface FigmaEmbedProps {
 }
 
 const FigmaEmbed: React.FC<FigmaEmbedProps> = ({ figmaUrl }) => {
+  console.log('figmaUrl', figmaUrl);
+
   return (
     <iframe
       style={{ border: '1px solid rgba(0, 0, 0, 0.1)' }}
       width="100%"
       height="450"
-      src={`https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(
-        figmaUrl
-      )}`}
+      src={`https://www.figma.com/embed?embed_host=share&url=${figmaUrl}`}
       allowFullScreen
     />
   );
@@ -122,7 +122,7 @@ class FigmaEmbedTool {
       if (match && match[1]) {
         // Use createRoot to render the component
         const root = ReactDOM.createRoot(this.wrapper);
-        root.render(<FigmaEmbed figmaUrl={url} readonly={this.readOnly}/>);
+        root.render(<FigmaEmbed figmaUrl={url} readonly={this.readOnly} />);
       } else {
         console.error('Invalid Figma URL');
       }

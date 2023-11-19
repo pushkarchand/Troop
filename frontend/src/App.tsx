@@ -3,7 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './modules/common/views/layout';
 import PageNotFound from './modules/common/views/pagenotfound';
 import Login from './modules/auth/views/login';
-import Home from './modules/myoverview/views';
+import MyOverview from './modules/myoverview/views';
+import Project from '@modules/project/views';
 
 const ROLES = {
   User: 2001,
@@ -20,7 +21,11 @@ function App() {
 
         {/* we want to protect these routes */}
         <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<MyOverview />} />
+        </Route>
+        <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+          <Route path="/project" element={<Project />} />
+          <Route path="/project/:projectId/:section/:page/:subpage" element={<Project />} />
         </Route>
 
         {/* <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />}>

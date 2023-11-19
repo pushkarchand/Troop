@@ -1,13 +1,5 @@
 version: "3"
 services:
-  troop-db:
-    image: mongo
-    ports:
-      - "27020:27017"
-    container_name: troop-nosql-db
-    volumes:
-      - ./db/:/data/db
-
   backend:
     build:
       dockerfile: Dockerfile
@@ -16,12 +8,22 @@ services:
     ports:
       - "5001:5001"
     restart: always
-    depends_on:
-      - "troop-db"
     volumes:
       - .:/app/
       - /app/backend/node_modules
     env_file:
       - ./backend/.env.dev
     tty: true
-  
+
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:5173"
+    restart: always
+    volumes:
+      - .:/app/
+      - /app/frontend/node_modules
+    tty: true

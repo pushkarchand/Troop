@@ -10,7 +10,7 @@ class CustomerService {
   async SignIn(userInputs) {
     const { email, password } = userInputs;
 
-    const existingCustomer = await this.repository.FindCustomer({ email });
+    const existingCustomer = await this.repository.Finduser({ email });
 
     if (existingCustomer) {
       const validPassword = await ValidatePassword(password, existingCustomer.password, existingCustomer.salt);
@@ -30,14 +30,14 @@ class CustomerService {
 
   async SignUp(userInputs) {
     const { email, password, phone, firstName, lastName, type } = userInputs;
-    const existingCustomer = await this.repository.FindCustomer({ email });
-    if (existingCustomer) {
+    const existingCustomer = await this.repository.Finduser({ email });
+    if (!existingCustomer) {
       // create salt
       let salt = await GenerateSalt();
 
       let userPassword = await GeneratePassword(password, salt);
 
-      const customer = await this.repository.CreateCustomer({
+      const customer = await this.repository.CreateUser({
         email,
         password: userPassword,
         phone,
@@ -46,7 +46,6 @@ class CustomerService {
         lastName,
         type,
       });
-
       const token = await GenerateSignature({
         email: email,
         _id: customer._id,
@@ -60,7 +59,7 @@ class CustomerService {
   }
 
   async GetProfile(id) {
-    const existingCustomer = await this.repository.FindCustomerById({ id });
+    const existingCustomer = await this.repository.FinduserById({ id });
     return FormateData(existingCustomer);
   }
 }

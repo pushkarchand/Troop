@@ -6,12 +6,11 @@ import MainNavigation from '@modules/common/components/mainnavigation';
 import SideBar from '@modules/common/components/sidebar';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
-import { Button } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 const MainContainer = styled.div`
   display: flex;
   box-sizing: borde-box;
-  flex-direction: column
 `;
 
 const RightSection = styled.div`
@@ -27,10 +26,12 @@ const CenterSection = styled.div`
   padding: ${spacing.large}px;
 `;
 
-const MyOverview = () => {
+const Project = () => {
+  const { projectId, section, page, subpage } = useParams();
+
   const { setAuth }: any = useContext(AuthContext);
   const navigate = useNavigate();
-
+  console.log('Project', { projectId, section, page, subpage });
   const logout = async () => {
     setAuth({});
     navigate('/');
@@ -40,17 +41,14 @@ const MyOverview = () => {
     <section>
       <MainNavigation />
       <MainContainer>
-        <div>MyOverview</div>
-        <Button variant="outlined"
-          onClick={() => {
-            navigate('/project/1/2/3/4');
-          }}
-        >
-          Project Details
-        </Button>
+        <SideBar />
+        <CenterSection>
+          <ReichTextEditor />
+        </CenterSection>
+        <RightSection></RightSection>
       </MainContainer>
     </section>
   );
 };
 
-export default MyOverview;
+export default Project;
