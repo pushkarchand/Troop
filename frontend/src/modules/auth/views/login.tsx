@@ -23,7 +23,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
+  // const from = location.state?.from?.pathname || '/';
 
   return (
     <MainSection>
@@ -39,7 +39,7 @@ const Login = () => {
             roles: [2001, 5150],
             accessToken: '',
           });
-          navigate(from, { replace: true });
+          navigate('/', { replace: true });
         }}
         startIcon={<GoogleIcon />}
       >

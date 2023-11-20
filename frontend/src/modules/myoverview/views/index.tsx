@@ -2,29 +2,71 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from '@context/authprovider';
-import ReichTextEditor from '@modules/common/components/richtexteditor';
 import MainNavigation from '@modules/common/components/mainnavigation';
-import SideBar from '@modules/common/components/sidebar';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
 import { Button } from '@mui/material';
-
+import { Add } from '@mui/icons-material';
+import color from '@utils/styles/color';
+import { designs, templates } from '@utils/contants/designs';
+import align from '@utils/styles/align';
+import cursor from '@utils/styles/cursor';
 const MainContainer = styled.div`
   display: flex;
-  box-sizing: borde-box;
+  box-sizing: border-box;
+  flex-direction: column;
+  padding: ${spacing.large}px 10%;
+`;
+
+const Container = styled.div`
+  display: flex;
   flex-direction: column;
 `;
 
-const RightSection = styled.div`
+const Header = styled.div`
   display: flex;
-  width: 150px;
+  justify-content: space-between;
 `;
 
-const CenterSection = styled.div`
+const TemplatesContainer = styled.div`
+  margin: ${spacing.small}px 0;
+  background-color: ${color.purple0};
+  padding: ${spacing.medium}px;
+  background-color: ${color.purple0};
+`;
+
+const DesignsCOntainer = styled.div`
+  margin: ${spacing.large}px 0;
+  padding: ${spacing.medium}px;
+`;
+
+const TemplatesList = styled.div`
   display: flex;
-  flex-grow: 1;
-  padding: ${spacing.small}px;
-  box-sizing: borde-box;
+  gap: ${spacing.medium}px;
+`;
+
+const Template = styled.div`
+  width: 180px;
+  height: 180px;
+  background-color: ${color.gray0};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  ${cursor.pointer};
+`;
+
+const Design = styled.div`
+  width: 180px;
+  height: 180px;
+  background-color: ${color.purple0};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  ${cursor.pointer};
+`;
+
+const Title = styled.div`
+  ${align.centerH};
   padding: ${spacing.large}px;
 `;
 
@@ -32,26 +74,48 @@ const MyOverview = () => {
   const { setAuth }: any = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const logout = async () => {
-    setAuth({});
-    navigate('/');
-  };
+  const routeToProject=() => {
+    navigate('/project/1/2/3/4');
+  }
 
   return (
-    <section>
+    <Container>
       <MainNavigation />
       <MainContainer>
-        <div>MyOverview</div>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            navigate('/project/1/2/3/4');
-          }}
-        >
-          Project Details
-        </Button>
+        <Header>
+          <span>Wellcome Pushkar</span>
+          <Button variant="contained" startIcon={<Add />} size="small" onClick={routeToProject}>
+            Create new design system
+          </Button>
+        </Header>
+        <TemplatesContainer>
+          <b>Create design system</b>
+          <p>
+            Choose from our pre built templates or create your own design
+            systems from the ground up
+          </p>
+          <TemplatesList>
+            {templates.map((item) => (
+              <Template key={item.id} onClick={routeToProject}>
+                {item.image}
+                <Title>{item.title}</Title>
+              </Template>
+            ))}
+          </TemplatesList>
+        </TemplatesContainer>
+        <DesignsCOntainer>
+          <p>Your design systems</p>
+          <TemplatesList>
+            {designs.map((item) => (
+              <Design key={item.id} onClick={routeToProject}>
+                {item.image}
+                <Title>{item.title}</Title>
+              </Design>
+            ))}
+          </TemplatesList>
+        </DesignsCOntainer>
       </MainContainer>
-    </section>
+    </Container>
   );
 };
 

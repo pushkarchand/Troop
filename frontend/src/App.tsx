@@ -1,7 +1,6 @@
 import React from 'react';
 import RequireAuth from './modules/common/requireauth';
 import { Routes, Route } from 'react-router-dom';
-import Layout from './modules/common/views/layout';
 import PageNotFound from './modules/common/views/pagenotfound';
 import Login from './modules/auth/views/login';
 import MyOverview from './modules/myoverview/views';
@@ -16,7 +15,7 @@ const ROLES = {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path="/">
         {/* public routes */}
         <Route path="login" element={<Login />} />
 
