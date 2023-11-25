@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const { PORT } = require('./config');
 const { databaseConnection } = require('./database');
 const expressApp = require('./express-app');
@@ -6,7 +7,7 @@ const expressApp = require('./express-app');
 const StartServer = async() => {
 
     const app = express();
-    
+    app.use(morgan('combined'));
     await databaseConnection();
 
     await expressApp(app);

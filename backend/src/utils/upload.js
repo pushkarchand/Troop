@@ -12,7 +12,6 @@ const s3Client = new S3Client({
 });
 
 async function uploadToS3(fileBuffer, fileName, mimetype) {
-  console.log({ ACCESS_KEY, SECRET_ACCESS_KEY, BUCKET_REGION, BUCKET_NAME });
   const uploadParams = {
     Bucket: BUCKET_NAME,
     Body: fileBuffer,

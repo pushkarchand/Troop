@@ -17,7 +17,8 @@ module.exports = (app) => {
       await uploadToS3(fileBuffer, imageName, file.mimetype);
       const url = await getObjectSignedUrl(imageName);
       res.status(200).send({
-        url
+        imageName,
+        url,
       });
     } catch (error) {
       console.log(`API: /upload :: ${error}`);

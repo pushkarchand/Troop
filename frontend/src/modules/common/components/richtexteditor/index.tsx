@@ -3,13 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import EditorJS from '@editorjs/editorjs';
 import { EDITOR_JS_TOOLS } from './constants';
 
-enum LogLevels {
-  VERBOSE = 'VERBOSE',
-  INFO = 'INFO',
-  WARN = 'WARN',
-  ERROR = 'ERROR',
-}
-
 const getDefaultValues = () => {
   const data = localStorage.getItem('defaultData');
   if (data) {
@@ -21,7 +14,6 @@ const getDefaultValues = () => {
 };
 
 const setDefaultDataValues = (value: any) => {
-  console.log('setDefaultDataValues', value);
   localStorage.setItem('defaultData', JSON.stringify(value));
 };
 
@@ -38,9 +30,14 @@ const EditorComponent = () => {
       autofocus: true,
       data: data,
       onChange: async () => {
-        let content = await editor.saver.save();
-        setdata(JSON.parse(JSON.stringify(content)));
-        setDefaultDataValues(content);
+        if (editor && editor.saver && typeof editor.saver.save === 'function') {
+          // Check if `editor` and `editor.saver` are defined, and if `save` is a function
+          let content = await editor.saver.save();
+          setdata(JSON.parse(JSON.stringify(content)));
+          setDefaultDataValues(content);
+        } else {
+          console.error('Editor or saver is not properly initialized.');
+        }
       },
       tools: EDITOR_JS_TOOLS as any,
       readOnly: false,

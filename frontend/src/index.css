@@ -32,3 +32,9 @@ html {
 #editorjs {
   width: 100%;
 }
+
+#figma-embed{
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
