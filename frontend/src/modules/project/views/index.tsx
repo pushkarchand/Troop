@@ -7,7 +7,6 @@ import MainNavigation from '@modules/common/components/mainnavigation';
 import SideBar from '@modules/common/components/sidebar';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
-import { useParams } from 'react-router-dom';
 import BasicTabs from '../components/tabs';
 
 const Container = styled.div`
@@ -27,9 +26,9 @@ const HeaderSection = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: ${spacing.large}px;
+  padding:  ${spacing.small}px ${spacing.large}px;
   box-sizing: border-box;
-  gap: ${spacing.medium}px;
+  gap: ${spacing.small}px;
 `;
 
 const CenterSection = styled.div`
@@ -88,7 +87,6 @@ const Project = () => {
           </HeaderSection>
           <BasicTabs />
         </CenterSection>
-        {/* <RightSection></RightSection> */}
       </MainContainer>
     </Container>
   );

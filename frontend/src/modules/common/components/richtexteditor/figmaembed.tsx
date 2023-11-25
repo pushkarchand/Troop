@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 interface FigmaEmbedData {
@@ -24,7 +24,6 @@ const FigmaEmbed: React.FC<FigmaEmbedProps> = ({ figmaUrl }) => {
       width="100%"
       height="450"
       src={`https://www.figma.com/embed?embed_host=share&url=${figmaUrl}`}
-      allowFullScreen
     />
   );
 };
@@ -99,6 +98,7 @@ class FigmaEmbedTool {
 
     const input = document.createElement('input');
     input.placeholder = this.config.placeholder || 'Paste a Figma URL...';
+    input.id = 'figma-embed';
     input.addEventListener('paste', (event) => {
       if (event.clipboardData) {
         const newUrl = event.clipboardData.getData('text');

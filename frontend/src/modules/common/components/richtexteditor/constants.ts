@@ -15,6 +15,10 @@ import FigmaEmbedTool from './figmaembed';
 import { upload } from '../../api/index';
 
 export const EDITOR_JS_TOOLS = {
+  header: Header,
+  checklist: CheckList,
+  delimiter: Delimiter,
+  embed: Embed,
   figmaEmbed: {
     class: FigmaEmbedTool,
     inlineToolbar: true,
@@ -22,18 +26,6 @@ export const EDITOR_JS_TOOLS = {
       placeholder: 'Paste Figma URL',
     },
   },
-  embed: Embed,
-  table: Table,
-  marker: Marker,
-  list: List,
-  warning: Warning,
-  code: Code,
-  linkTool: LinkTool,
-  header: Header,
-  quote: Quote,
-  checklist: CheckList,
-  delimiter: Delimiter,
-  inlineCode: InlineCode,
   image: {
     class: Image,
     config: {
@@ -47,18 +39,36 @@ export const EDITOR_JS_TOOLS = {
          * @return {Promise.<{success, file: {url}}>}
          */
         uploadByFile(file: File) {
-          // your own uploading logic here
-          return upload(file).then((response: any) => {
-            return {
-              success: 1,
-              file: {
-                url: response.data.url,
-              },
-            };
+          // Your own uploading logic here
+          return new Promise((resolve, reject) => {
+            upload(file)
+              .then((response: any) => {
+                // Use setTimeout to delay the response after 2 seconds
+                setTimeout(() => {
+                  resolve({
+                    success: 1,
+                    file: {
+                      url: response.data.url,
+                      imageName: response.data.imageName,
+                    },
+                  });
+                }, 5000);
+              })
+              .catch((error: any) => {
+                reject(error); // Propagate any errors that occur during the upload
+              });
           });
         },
         types: 'image/*',
       },
     },
   },
+  table: Table,
+  list: List,
+  linkTool: LinkTool,
+  marker: Marker,
+  quote: Quote,
+  warning: Warning,
+  code: Code,
+  inlineCode: InlineCode,
 };

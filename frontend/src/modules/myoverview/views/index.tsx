@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from '@context/authprovider';
@@ -11,6 +11,9 @@ import color from '@utils/styles/color';
 import { designs, templates } from '@utils/contants/designs';
 import align from '@utils/styles/align';
 import cursor from '@utils/styles/cursor';
+import CreateProject from '../components/createproject';
+import { Project } from '../../../types/project';
+import { post } from '@api/safe';
 const MainContainer = styled.div`
   display: flex;
   box-sizing: border-box;
@@ -71,12 +74,23 @@ const Title = styled.div`
 `;
 
 const MyOverview = () => {
+  const [isCreateProject, setIsCreateProject] = useState(false);
+
   const { setAuth }: any = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const routeToProject=() => {
+  const createProject = async (project: Project) => {
+    try {
+      const data = await post('/project', project);
+      console.log('createProject', data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const routeToProject = () => {
     navigate('/project/1/2/3/4');
-  }
+  };
 
   return (
     <Container>
@@ -84,7 +98,14 @@ const MyOverview = () => {
       <MainContainer>
         <Header>
           <span>Wellcome Pushkar</span>
-          <Button variant="contained" startIcon={<Add />} size="small" onClick={routeToProject}>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            size="small"
+            onClick={() => {
+              setIsCreateProject(true);
+            }}
+          >
             Create new design system
           </Button>
         </Header>
@@ -96,7 +117,10 @@ const MyOverview = () => {
           </p>
           <TemplatesList>
             {templates.map((item) => (
-              <Template key={item.id} onClick={routeToProject}>
+              <Template
+                key={`${item.id}-${item.title}`}
+                onClick={routeToProject}
+              >
                 {item.image}
                 <Title>{item.title}</Title>
               </Template>
@@ -107,7 +131,7 @@ const MyOverview = () => {
           <p>Your design systems</p>
           <TemplatesList>
             {designs.map((item) => (
-              <Design key={item.id} onClick={routeToProject}>
+              <Design key={`${item.id}-${item.title}`} onClick={routeToProject}>
                 {item.image}
                 <Title>{item.title}</Title>
               </Design>
@@ -115,6 +139,15 @@ const MyOverview = () => {
           </TemplatesList>
         </DesignsCOntainer>
       </MainContainer>
+      {isCreateProject ? (
+        <CreateProject
+          open={isCreateProject}
+          close={() => {
+            setIsCreateProject(false);
+          }}
+          create={createProject}
+        />
+      ) : null}
     </Container>
   );
 };
