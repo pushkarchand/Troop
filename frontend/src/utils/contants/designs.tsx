@@ -35,7 +35,7 @@ export const designs = [
   },
   {
     title: 'Design two',
-    id: 1,
+    id: 2,
     // eslint-disable-next-line jsx-a11y/alt-text
     image: <img src={design2} />,
   },
