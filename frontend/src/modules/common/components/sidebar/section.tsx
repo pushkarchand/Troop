@@ -11,10 +11,9 @@ const SectionContainer = styled.div`
 
 const Title = styled.div`
   font-size: 13px;
-  color: ${color.gray500};
-  padding: ${spacing.small}px;
+  color: #968f93;
   ${cursor.pointer};
-  &:hover{
+  &:hover {
     background-color: ${color.gray100};
   }
 `;
@@ -22,18 +21,17 @@ const Title = styled.div`
 const PageTitle = styled.div`
   font-size: 13px;
   color: ${color.gray900};
-  padding:${spacing.small}px;
   ${cursor.pointer};
-  &:hover{
+  padding: 2px ${spacing.xsmall}px;
+  &:hover {
     background-color: ${color.gray100};
   }
 `;
 
 const PagesConatiner = styled.div`
-  padding-left: ${spacing.medium}px;
+  padding: ${spacing.small}px 0px 0px ${spacing.medium}px;
   display: flex;
   flex-direction: column;
-  gap: ${spacing.medium}px;
 `;
 
 type Props = {

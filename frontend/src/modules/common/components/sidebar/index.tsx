@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import align from '@utils/styles/align';
 import color from '@utils/styles/color';
 import { sections } from '@utils/contants/sections';
 import Section from './section';
 import spacing from '@utils/styles/spacing';
+import Button from '@mui/material/Button';
+import { Add } from '@mui/icons-material';
 
-type Props = {};
-
+// styled componets
 const Container = styled.div`
   display: flex;
   flex: 1 1 0;
@@ -28,13 +28,37 @@ const SectionsConationer = styled.div`
   gap: ${spacing.medium}px;
 `;
 
+const AddNewSction = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center
+  margin: ${spacing.medium}px 0;
+`;
+
 const SideBar = () => {
+  const createNewSection = () => {
+    console.log('created');
+  };
   return (
     <Container>
       <SectionsConationer>
-        {sections.map((item) => (
-          <Section item={item} key={item.id} />
-        ))}
+        <AddNewSction>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            size="small"
+            onClick={() => {
+              createNewSection();
+            }}
+          >
+            Add new section
+          </Button>
+        </AddNewSction>
+        <>
+          {sections.map((item) => (
+            <Section item={item} key={item.id} />
+          ))}
+        </>
       </SectionsConationer>
     </Container>
   );

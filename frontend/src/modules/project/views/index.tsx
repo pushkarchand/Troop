@@ -26,7 +26,7 @@ const HeaderSection = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding:  ${spacing.small}px ${spacing.large}px;
+  padding: ${spacing.small}px ${spacing.large}px;
   box-sizing: border-box;
   gap: ${spacing.small}px;
 `;

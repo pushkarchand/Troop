@@ -5,15 +5,16 @@ import AuthContext from '@context/authprovider';
 import MainNavigation from '@modules/common/components/mainnavigation';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
-import { Button } from '@mui/material';
+import { Button, css } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import color from '@utils/styles/color';
 import { designs, templates } from '@utils/contants/designs';
-import align from '@utils/styles/align';
 import cursor from '@utils/styles/cursor';
 import CreateProject from '../components/createproject';
 import { Project } from '../../../types/project';
 import { post } from '@api/safe';
+import text from '@utils/styles/text';
+
 const MainContainer = styled.div`
   display: flex;
   box-sizing: border-box;
@@ -31,46 +32,66 @@ const Header = styled.div`
   justify-content: space-between;
 `;
 
-const TemplatesContainer = styled.div`
-  margin: ${spacing.small}px 0;
-  background-color: ${color.purple0};
-  padding: ${spacing.medium}px;
-  background-color: ${color.purple0};
+const WelcomeUser = styled.div`
+  font-size: 22px;
+  line-height: 28px;
 `;
 
-const DesignsCOntainer = styled.div`
+const TemplatesContainer = styled.div`
   margin: ${spacing.large}px 0;
   padding: ${spacing.medium}px;
+  background-color: ${color.purple0};
+  border-radius: ${spacing.xsmall}px;
 `;
+
+const SecondaryHeader = styled.h2`
+  ${text.h2}
+  font-weight: 500;
+`;
+
+const SubText = styled.div`
+  ${text.regular}
+  padding-top: ${spacing.small}px;
+`;
+
+const DesignsCOntainer = styled.div``;
 
 const TemplatesList = styled.div`
   display: flex;
   gap: ${spacing.medium}px;
+  margin: ${spacing.medium}px 0px;
+`;
+
+const CardTemplate = css`
+  width: 180px;
+  height: 190px;
+  ${cursor.pointer};
+  padding: ${spacing.small}px;
+  border-radius: ${spacing.small}px;
+  box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const Template = styled.div`
-  width: 180px;
-  height: 180px;
+  ${CardTemplate}
   background-color: ${color.gray0};
+`;
+
+const TemplateImageWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  ${cursor.pointer};
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: ${spacing.small}px;
 `;
 
 const Design = styled.div`
-  width: 180px;
-  height: 180px;
+  ${CardTemplate}
   background-color: ${color.purple0};
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  ${cursor.pointer};
 `;
 
 const Title = styled.div`
-  ${align.centerH};
-  padding: ${spacing.large}px;
+  padding: ${spacing.medium}px ${spacing.small}px;
 `;
 
 const MyOverview = () => {
@@ -97,7 +118,7 @@ const MyOverview = () => {
       <MainNavigation />
       <MainContainer>
         <Header>
-          <span>Wellcome Pushkar</span>
+          <WelcomeUser>Wellcome, Pushkar</WelcomeUser>
           <Button
             variant="contained"
             startIcon={<Add />}
@@ -110,29 +131,29 @@ const MyOverview = () => {
           </Button>
         </Header>
         <TemplatesContainer>
-          <b>Create design system</b>
-          <p>
+          <SecondaryHeader>Create design system</SecondaryHeader>
+          <SubText>
             Choose from our pre built templates or create your own design
             systems from the ground up
-          </p>
+          </SubText>
           <TemplatesList>
             {templates.map((item) => (
               <Template
                 key={`${item.id}-${item.title}`}
                 onClick={routeToProject}
               >
-                {item.image}
+                <TemplateImageWrapper>{item.image}</TemplateImageWrapper>
                 <Title>{item.title}</Title>
               </Template>
             ))}
           </TemplatesList>
         </TemplatesContainer>
         <DesignsCOntainer>
-          <p>Your design systems</p>
+          <SecondaryHeader>Your design systems</SecondaryHeader>
           <TemplatesList>
             {designs.map((item) => (
               <Design key={`${item.id}-${item.title}`} onClick={routeToProject}>
-                {item.image}
+                <TemplateImageWrapper>{item.image}</TemplateImageWrapper>
                 <Title>{item.title}</Title>
               </Design>
             ))}
