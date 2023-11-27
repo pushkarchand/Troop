@@ -1,12 +1,29 @@
 const mongoose = require("mongoose");
-const ProjectSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  avatar: String,
-  createdBy: String,
-  createdAt: { type: Date, default: Date.now },
-  sections: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Section" }], default: [] },
-});
+const shortid = require("shortid");
+const ProjectSchema = new mongoose.Schema(
+  {
+    localId: {
+      type: String,
+      default: shortid.generate,
+      unique: true,
+    },
+    name: String,
+    description: String,
+    avatar: String,
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    sections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Section" }],
+  },
+  {
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.__$;
+        delete doc.__v;
+        delete ret.$isNew;
+      },
+    },
+    timestamps: true,
+  }
+);
 
 const ProjectModel = mongoose.model("Project", ProjectSchema);
-module.exports =  ProjectModel
+module.exports = ProjectModel;

@@ -1,6 +1,5 @@
 const { ProjectModel } = require("../models");
 
-//Dealing with data base operations
 class ProjectRepository {
   async CreateProject({ name, description, avatar, createdBy }) {
     const project = new ProjectModel({
@@ -15,14 +14,47 @@ class ProjectRepository {
     return ProjectResult;
   }
 
-  async ProjectDetails({ id }) {
-    const project = await ProjectModel.findById(id).populate('Section');
+  async UpdateProject({ id, name, description, sections }) {
+    const updatedProject = await ProjectModel.findOneAndUpdate(
+      { localId: id },
+      { name, description, sections },
+      { new: true }
+    );
+
+    return updatedProject;
+  }
+
+  async FetchProjectById(id) {
+    const project = await ProjectModel.findById(id);
     return project;
   }
 
-  async FinduserById({ id }) {
-    const project = await ProjectModel.findById(id);
+  async ProjectDetails(id) {
+    const project = await ProjectModel.findOne({ localId: id })
+      .populate({
+        path: "sections",
+        model: "Section",
+        populate: {
+          path: "pages",
+          model: "Page",
+          populate: {
+            path: "subPages",
+            model: "SubPage",
+          },
+        },
+      })
+      .exec();
     return project;
+  }
+
+  async FetchProjects() {
+    const projects = await ProjectModel.find({});
+    return projects;
+  }
+
+  async DeleteProject(id) {
+    const deletedProject = await ProjectModel.findOneAndDelete(id);
+    return deletedProject;
   }
 }
 

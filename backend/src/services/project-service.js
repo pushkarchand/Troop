@@ -14,12 +14,35 @@ class ProjectService {
       description,
     });
 
-    return FormateData({ ...project  });
+    return FormateData({ ...project._doc });
   }
 
-  async GetProfile(id) {
-    const existingCustomer = await this.repository.FinduserById({ id });
-    return FormateData(existingCustomer);
+  async updateProject(projectInputs) {
+    const {id, name, description, sections } = projectInputs;
+
+    const project = await this.repository.UpdateProject({
+      id,
+      name,
+      description,
+      sections,
+    });
+
+    return FormateData({ ...project });
+  }
+
+  async findAllProjects() {
+    const projects = await this.repository.FetchProjects();
+    return FormateData(projects);
+  }
+
+  async findProjectById(id) {
+    const projects = await this.repository.ProjectDetails(id);
+    return FormateData(projects);
+  }
+
+  async deleteProject(id) {
+    const projects = await this.repository.DeleteProject(id);
+    return FormateData(projects);
   }
 }
 
