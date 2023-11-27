@@ -1,5 +1,6 @@
 const { ContentRepository } = require("../database");
 const { FormateData } = require("../utils");
+const { getObjectSignedUrl } = require("../utils/upload");
 // All Business logic will be here
 class ContentSevice {
   constructor() {
@@ -30,7 +31,28 @@ class ContentSevice {
 
   async contentDetailsOnSubPageId(id) {
     const content = await this.repository.ContentDetailsOnSubPageId(id);
-    return FormateData(content);
+    console.log("content", content);
+    const targetData = [];
+    await Promise.all(
+      content.data.blocks.map(async (item) => {
+        if (item.type === "image") {
+          const url = await getObjectSignedUrl(item.data.file.imageName);
+          targetData.push({
+            ...item,
+            data: {
+              ...item.data,
+              file: {
+                ...item.data.file,
+                url: url,
+              },
+            },
+          });
+        } else {
+          targetData.push({ ...item });
+        }
+      })
+    );
+    return FormateData({ ...content, data: { ...content.data, blocks: targetData } });
   }
 }
 

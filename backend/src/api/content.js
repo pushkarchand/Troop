@@ -39,6 +39,7 @@ module.exports = (app) => {
       const { data } = await service.contentDetailsOnSubPageId(contentId);
       res.json(data);
     } catch (error) {
+      console.log("error", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
