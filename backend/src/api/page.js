@@ -1,15 +1,16 @@
-const ProjectService = require("../services/project-service");
+const PageService = require("../services/page-service");
 const UserAuth = require("./middlewares/auth");
 
 module.exports = (app) => {
-  const service = new ProjectService();
+  const service = new PageService();
 
-  app.post("/api/projects", async (req, res) => {
+  app.post("/api/pages", async (req, res) => {
     try {
-      const { name, description } = req.body;
-      const { data } = await service.CreateProject({
+      const { name, description, sectionId } = req.body;
+      const { data } = await service.createPage({
         name,
         description,
+        sectionId,
       });
       res.json(data);
     } catch (error) {
@@ -18,13 +19,14 @@ module.exports = (app) => {
     }
   });
 
-  app.put("/api/projects", async (req, res) => {
+  app.put("/api/pages", async (req, res) => {
     try {
-      const { id,name, description } = req.body;
-      const { data } = await service.updateProject({
+      const { id, name, description, subPages } = req.body;
+      const { data } = await service.updatePage({
         id,
         name,
         description,
+        subPages,
       });
       res.json(data);
     } catch (error) {
@@ -33,19 +35,9 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/projects", async (req, res, next) => {
+  app.get("/api/pages", async (req, res, next) => {
     try {
-      const { data } = await service.findAllProjects();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
-    }
-  });
-
-  app.get("/api/projects/:id", async (req, res, next) => {
-    try {
-      const projectId = req.params.id;
-      const { data } = await service.findProjectById(projectId);
+      const { data } = await service.findAllPages();
       res.json(data);
     } catch (error) {
       console.log("error", error);
@@ -53,10 +45,21 @@ module.exports = (app) => {
     }
   });
 
-  app.delete("/api/projects/:id", async (req, res, next) => {
+  app.get("/api/pages/:id", async (req, res, next) => {
     try {
-      const projectId = req.params.id;
-      const { data } = await service.deleteProject(projectId);
+      const pageId = req.params.id;
+      const { data } = await service.findPageById(pageId);
+      res.json(data);
+    } catch (error) {
+      console.log("error", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.delete("/api/pages/:id", async (req, res, next) => {
+    try {
+      const pageId = req.params.id;
+      const { data } = await service.deletePage(pageId);
       res.json(data);
     } catch (error) {
       console.log("error", error);

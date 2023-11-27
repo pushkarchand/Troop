@@ -49,10 +49,11 @@ class CustomerService {
       const token = await GenerateSignature({
         email: email,
         _id: customer._id,
+        localId: customer.localId,
         type: customer.type,
         name: `${customer.firstName} ${customer.lastName}`,
       });
-      return FormateData({ id: customer._id, token });
+      return FormateData({ _id: customer._id, localId: customer.localId, token });
     } else {
       return FormateData({ code: "USER_EXISTS" });
     }
