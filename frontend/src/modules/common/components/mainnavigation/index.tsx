@@ -6,7 +6,8 @@ import Logo from '@assets/images/logo.svg';
 import { Avatar, MenuItem, Select } from '@mui/material';
 import UserAvatar from '@assets/images/avatar.png';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AppContextType, useMainContext } from '@context/maincontext';
 const Header = styled.nav`
   display: flex;
   width: 100%;
@@ -31,11 +32,14 @@ const MainLogo = styled.img`
   margin-left: ${spacing.medium}px;
 `;
 
-type Props = {};
+type Props = {
+  showProjects: boolean;
+};
 
-function MainNavigation({}: Props) {
-  const [options] = useState([1, 2, 3, 4]);
-  const [value, setvalue] = useState(1);
+function MainNavigation({ showProjects }: Props) {
+  const { projectId } = useParams();
+  const { projects }: AppContextType = useMainContext();
+  const [value, setvalue] = useState<string>(projectId || '');
   const navigate = useNavigate();
   return (
     <Header>
@@ -47,22 +51,24 @@ function MainNavigation({}: Props) {
             navigate('/');
           }}
         />
-        <Select
-          value={value}
-          onChange={(e) => {
-            setvalue(Number(e.target.value));
-          }}
-          displayEmpty
-          inputProps={{ 'aria-label': 'Without label' }}
-          disableUnderline
-          variant="standard"
-        >
-          {options.map((option) => (
-            <MenuItem key={option} value={option}>
-              My design system {option}
-            </MenuItem>
-          ))}
-        </Select>
+        {showProjects ? (
+          <Select
+            value={value}
+            onChange={(e) => {
+              setvalue(e.target.value);
+            }}
+            displayEmpty
+            inputProps={{ 'aria-label': 'Without label' }}
+            disableUnderline
+            variant="standard"
+          >
+            {projects.map((option) => (
+              <MenuItem key={option._id} value={option.localId}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </Select>
+        ) : null}
       </LeftSection>
       <RightSection>
         <Avatar alt="Cindy Baker" src={UserAvatar} />

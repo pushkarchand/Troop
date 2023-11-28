@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import AuthContext from '@context/authprovider';
 import MainNavigation from '@modules/common/components/mainnavigation';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
 import { Button, css } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import color from '@utils/styles/color';
-import { designs, templates } from '@utils/contants/designs';
+import { templates } from '@utils/contants/designs';
+import design1 from '@assets/images/design1.png';
 import cursor from '@utils/styles/cursor';
-import CreateProject from '../components/createproject';
-import { Project } from '../../../types/project';
+import CreateProject from '../../common/components/createmodal';
+import { Project, CreatePayload } from '@datatypes/project';
 import { post } from '@api/safe';
 import text from '@utils/styles/text';
+import { AppContextType, useMainContext } from '@context/maincontext';
+import { useSnackbar } from '@modules/common/components/snackbar';
 
 const MainContainer = styled.div`
   display: flex;
@@ -96,26 +97,31 @@ const Title = styled.div`
 
 const MyOverview = () => {
   const [isCreateProject, setIsCreateProject] = useState(false);
-
-  const { setAuth }: any = useContext(AuthContext);
   const navigate = useNavigate();
+  const { projects, fetchProjects }: AppContextType = useMainContext();
+  const { openSnackbar } = useSnackbar();
 
-  const createProject = async (project: Project) => {
+  const createProject = async (project: CreatePayload) => {
     try {
-      const data = await post('/project', project);
-      console.log('createProject', data);
+      setIsCreateProject(false);
+      const respose: Project = await post('/api/projects', project);
+      openSnackbar('Successfully created new design system', 'success');
+      fetchProjects();
+      setTimeout(() => {
+        routeToProject(respose);
+      }, 1000);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const routeToProject = () => {
-    navigate('/project/1/2/3/4');
+  const routeToProject = (item: Project) => {
+    navigate(`/project/${item.localId}`);
   };
 
   return (
     <Container>
-      <MainNavigation />
+      <MainNavigation showProjects={false}/>
       <MainContainer>
         <Header>
           <WelcomeUser>Wellcome, Pushkar</WelcomeUser>
@@ -139,10 +145,7 @@ const MyOverview = () => {
           </SubText>
           <TemplatesList>
             {templates.map((item) => (
-              <Template
-                key={`${item.id}-${item.title}`}
-                onClick={routeToProject}
-              >
+              <Template key={`${item.id}-${item.title}`}>
                 <TemplateImageWrapper>{item.image}</TemplateImageWrapper>
                 <Title>{item.title}</Title>
               </Template>
@@ -152,10 +155,17 @@ const MyOverview = () => {
         <DesignsCOntainer>
           <SecondaryHeader>Your design systems</SecondaryHeader>
           <TemplatesList>
-            {designs.map((item) => (
-              <Design key={`${item.id}-${item.title}`} onClick={routeToProject}>
-                <TemplateImageWrapper>{item.image}</TemplateImageWrapper>
-                <Title>{item.title}</Title>
+            {projects.map((item) => (
+              <Design
+                key={`${item._id}`}
+                onClick={() => {
+                  routeToProject(item);
+                }}
+              >
+                <TemplateImageWrapper>
+                  <img src={design1} alt={item.name} />
+                </TemplateImageWrapper>
+                <Title>{item.name}</Title>
               </Design>
             ))}
           </TemplatesList>
@@ -168,6 +178,7 @@ const MyOverview = () => {
             setIsCreateProject(false);
           }}
           create={createProject}
+          title={'Create Project'}
         />
       ) : null}
     </Container>

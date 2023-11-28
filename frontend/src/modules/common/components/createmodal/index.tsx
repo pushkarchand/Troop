@@ -1,26 +1,35 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Project } from 'src/types/project';
+import { CreatePayload } from 'src/types/project';
 import { TextField } from '@mui/material';
 import { useState } from 'react';
+import styled from '@emotion/styled';
 
-type CreateProjectProps = {
+type CreateProps = {
   open: boolean;
+  title: string;
   close: () => void;
-  create: (value: Project) => void;
+  create: (value: CreatePayload) => void;
 };
 
-export default function CreateProject({
+const Box = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+`;
+
+export default function CreateModal({
   open,
+  title,
   close,
   create,
-}: CreateProjectProps) {
-  const [project, setProject] = useState<Project>({
+}: CreateProps) {
+  const [project, setProject] = useState<CreatePayload>({
     name: '',
     description: '',
   });
@@ -37,18 +46,9 @@ export default function CreateProject({
 
   return (
     <Dialog fullWidth={true} maxWidth={'sm'} open={open} onClose={close}>
-      <DialogTitle>Create Project</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <Box
-          noValidate
-          component="form"
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '20px',
-            padding: '20px 0',
-          }}
-        >
+        <Box>
           <TextField
             id="project-name"
             required

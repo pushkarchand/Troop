@@ -3,15 +3,7 @@ const { UserModel } = require("../models");
 
 //Dealing with data base operations
 class UserRepository {
-  async CreateUser({
-    email,
-    password,
-    phone,
-    salt,
-    firstName,
-    lastName,
-    type,
-  }) {
+  async CreateUser({ email, password, phone, salt, firstName, lastName, type }) {
     const user = new UserModel({
       email,
       password,
@@ -27,16 +19,16 @@ class UserRepository {
     return userResult;
   }
 
-  async Finduser({ email }) {
+  async Finduser(email) {
     const existingUser = await UserModel.findOne({ email: email });
     return existingUser;
   }
 
-  async FinduserById({ id }) {
-    const existingUser = await UserModel.findById(id)
+  async FinduserById(id) {
+    console.log("id", id);
+    const existingUser = await UserModel.findById(id);
     return existingUser;
   }
-
 }
 
 module.exports = UserRepository;

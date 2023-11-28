@@ -15,8 +15,6 @@ interface FigmaEmbedProps {
 }
 
 const FigmaEmbed: React.FC<FigmaEmbedProps> = ({ figmaUrl }) => {
-  console.log('figmaUrl', figmaUrl);
-
   return (
     <iframe
       title="Figma Embed"
@@ -120,7 +118,6 @@ class FigmaEmbedTool {
         // eslint-disable-next-line no-useless-escape
         /^https:\/\/www\.figma\.com\/(?:file|proto)\/([^\/?]+)/i;
       const match = url.match(figmaRegex);
-      console.log({ url, match });
       if (match && match[1]) {
         // Use createRoot to render the component
         const root = ReactDOM.createRoot(this.wrapper);
