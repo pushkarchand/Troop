@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import AuthContext from '@context/authprovider';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import MainNavigation from '@modules/common/components/mainnavigation';
 import SideBar from '@modules/common/components/sidebar';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
 import BasicTabs from '../components/tabs';
+import { getSafe } from '@api/safe';
+import { Project } from '@datatypes/project';
 
 const Container = styled.div`
   display: flex;
@@ -51,23 +51,39 @@ const BorderlessTextarea = styled.textarea`
   padding: 8px;
 `;
 
-const Project = () => {
-  // const { projectId, section, page, subpage } = useParams();
+const ProjectLanding = () => {
   const [name, setName] = useState('Button');
   const [description, setDescription] = useState('');
-  const { setAuth }: any = useContext(AuthContext);
+  const [projectDetails, setProjectDetails] = useState<Project | null>(null);
+  const { projectId } = useParams();
   const navigate = useNavigate();
 
-  const logout = async () => {
-    setAuth({});
-    navigate('/');
+  useEffect(() => {
+    if (projectId) {
+      fetchProjectDetails();
+    } else {
+      navigate('/');
+    }
+  }, []);
+
+  const fetchProjectDetails = async () => {
+    try {
+      const response = await getSafe(`/api/projects/${projectId}`);
+      setProjectDetails({ ...response });
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   return (
     <Container>
       <MainNavigation />
       <MainContainer>
-        <SideBar />
+        <SideBar
+          sections={projectDetails?.sections || []}
+          projectId={projectDetails?._id || ''}
+          updateDetails={fetchProjectDetails}
+        />
         <CenterSection>
           <HeaderSection>
             <BorderlessInput
@@ -92,4 +108,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default ProjectLanding;

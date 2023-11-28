@@ -27,7 +27,6 @@ const EditorComponent = () => {
       onReady: () => {
         ejInstance.current = editor;
       },
-      autofocus: true,
       data: data,
       onChange: async () => {
         if (editor && editor.saver && typeof editor.saver.save === 'function') {

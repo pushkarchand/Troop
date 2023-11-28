@@ -6,7 +6,8 @@ import Logo from '@assets/images/logo.svg';
 import { Avatar, MenuItem, Select } from '@mui/material';
 import UserAvatar from '@assets/images/avatar.png';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AppContextType, useMainContext } from '@context/maincontext';
 const Header = styled.nav`
   display: flex;
   width: 100%;
@@ -34,8 +35,9 @@ const MainLogo = styled.img`
 type Props = {};
 
 function MainNavigation({}: Props) {
-  const [options] = useState([1, 2, 3, 4]);
-  const [value, setvalue] = useState(1);
+  const { projectId } = useParams();
+  const { projects }: AppContextType = useMainContext();
+  const [value, setvalue] = useState<string>(projectId || '');
   const navigate = useNavigate();
   return (
     <Header>
@@ -50,16 +52,16 @@ function MainNavigation({}: Props) {
         <Select
           value={value}
           onChange={(e) => {
-            setvalue(Number(e.target.value));
+            setvalue(e.target.value);
           }}
           displayEmpty
           inputProps={{ 'aria-label': 'Without label' }}
           disableUnderline
           variant="standard"
         >
-          {options.map((option) => (
-            <MenuItem key={option} value={option}>
-              My design system {option}
+          {projects.map((option) => (
+            <MenuItem key={option._id} value={option.localId}>
+              {option.name}
             </MenuItem>
           ))}
         </Select>

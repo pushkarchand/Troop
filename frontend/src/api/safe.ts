@@ -1,30 +1,39 @@
+import axios from "axios";
 const baseUrl = import.meta.env.VITE_REACT_APP_BASE_URL;
 
-const fetchOptions = (postData: any) => {
-  const accessToken = '';
-  return {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(postData),
-  };
+const axiosOptions = {
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('alluvium_auth_token')}`,
+  },
 };
 
-export const post = (url: string, payload: any) => {
-  const apiUrl = `${baseUrl}${url}`;
-  fetch(apiUrl, fetchOptions(payload))
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(async (data) => {
-      await data.json();
-    })
-    .catch((error) => {
-      throw error;
-    });
+export const post = async (url: string, payload: any) => {
+  try {
+    const response = await axios.post(`${baseUrl}${url}`, payload, axiosOptions);
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`Axios error! ${error.message}`);
+  }
+};
+
+export const getSafe = async (url: string) => {
+  try {
+    const response = await axios.get(`${baseUrl}${url}`, axiosOptions);
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`Axios error! ${error.message}`);
+  }
+};
+
+export const loginUser = async (payload: any) => {
+  try {
+    const response = await axios.post(`${baseUrl}/login`, payload);
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`Axios error! ${error.message}`);
+  }
 };

@@ -65,6 +65,7 @@ const Tab = styled.div<any>`
   border-bottom: ${({ hasBorderBottom }) =>
     hasBorderBottom ? `3px solid ${color.purple400}` : 'none'};
   ${align.center};
+  box-sizing: border-box;
 `;
 
 export default function BasicTabs() {

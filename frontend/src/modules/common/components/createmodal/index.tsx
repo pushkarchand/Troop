@@ -5,22 +5,24 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Project } from 'src/types/project';
+import { CreatePayload } from 'src/types/project';
 import { TextField } from '@mui/material';
 import { useState } from 'react';
 
-type CreateProjectProps = {
+type CreateProps = {
   open: boolean;
+  title: string;
   close: () => void;
-  create: (value: Project) => void;
+  create: (value: CreatePayload) => void;
 };
 
-export default function CreateProject({
+export default function CreateModal({
   open,
+  title,
   close,
   create,
-}: CreateProjectProps) {
-  const [project, setProject] = useState<Project>({
+}: CreateProps) {
+  const [project, setProject] = useState<CreatePayload>({
     name: '',
     description: '',
   });
@@ -37,7 +39,7 @@ export default function CreateProject({
 
   return (
     <Dialog fullWidth={true} maxWidth={'sm'} open={open} onClose={close}>
-      <DialogTitle>Create Project</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Box
           noValidate

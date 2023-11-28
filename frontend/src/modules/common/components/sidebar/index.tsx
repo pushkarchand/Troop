@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import color from '@utils/styles/color';
-import { sections } from '@utils/contants/sections';
-import Section from './section';
+import SectionComponent from './section';
 import spacing from '@utils/styles/spacing';
 import Button from '@mui/material/Button';
 import { Add } from '@mui/icons-material';
+import { CreatePayload, Section } from '@datatypes/project';
+import CreateModal from '../createmodal';
+import { post } from '@api/safe';
+
+type SectionProps = {
+  sections: Section[];
+  projectId: string;
+  updateDetails: () => void;
+};
 
 // styled componets
 const Container = styled.div`
@@ -35,9 +43,19 @@ const AddNewSction = styled.div`
   margin: ${spacing.medium}px 0;
 `;
 
-const SideBar = () => {
-  const createNewSection = () => {
-    console.log('created');
+const SideBar = ({ sections, projectId, updateDetails }: SectionProps) => {
+  const [isCreateSection, setIsCreateSection] = useState(false);
+
+  const createNewSection = async (payload: CreatePayload) => {
+    try {
+      const createPagePayload = { ...payload, projectId };
+      const response = await post('/api/sections', createPagePayload);
+      setIsCreateSection(false);
+      updateDetails();
+    } catch (error: any) {
+      console.log(error);
+      setIsCreateSection(false);
+    }
   };
   return (
     <Container>
@@ -48,7 +66,7 @@ const SideBar = () => {
             startIcon={<Add />}
             size="small"
             onClick={() => {
-              createNewSection();
+              setIsCreateSection(true);
             }}
             sx={{ borderRadius: 20 }}
           >
@@ -56,11 +74,26 @@ const SideBar = () => {
           </Button>
         </AddNewSction>
         <>
-          {sections.map((item) => (
-            <Section item={item} key={item.id} />
-          ))}
+          {sections &&
+            sections.map((item) => (
+              <SectionComponent
+                item={item}
+                key={item._id}
+                updateDetails={updateDetails}
+              />
+            ))}
         </>
       </SectionsConationer>
+      {isCreateSection ? (
+        <CreateModal
+          open={isCreateSection}
+          close={() => {
+            setIsCreateSection(false);
+          }}
+          create={createNewSection}
+          title={'Create Section'}
+        />
+      ) : null}
     </Container>
   );
 };

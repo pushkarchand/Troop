@@ -1,13 +1,23 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-
-import useAuth from '@modules/common/hooks/useauth';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { Button } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
+import { Button, TextField } from '@mui/material';
+import LoginIcon from '@mui/icons-material/Login';
 import Logo from '@assets/images/logo.svg';
 import MainCover from '@assets/images/maincover.png';
-// const LOGIN_URL = '/auth';
+import spacing from '@utils/styles/spacing';
+import align from '@utils/styles/align';
+import { useMainContext } from '@context/maincontext';
+import { loginUser } from '@api/safe';
+import { decodeToken } from '@context/useauth';
+import { useSnackbar } from '@modules/common/components/snackbar';
+const emailValidationMsg = 'Please enter a valid email address';
+const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+interface ILoginValidation {
+  email: string | null;
+  password: string | null;
+}
 
 const MainSection = styled.div`
   display: flex;
@@ -23,12 +33,83 @@ const WelcomeText = styled.div`
   line-height: 24px;
 `;
 
-const Login = () => {
-  const { setAuth }: any = useAuth();
+const MainBodyContainer = styled.div`
+  display: flex;
+  width: 100%;
+  position: relative;
+`;
 
+const StyledImage = styled.img`
+  width: calc(100% - 300px);
+  height: calc(100vh - 225px);
+`;
+
+const LoginSection = styled.div`
+  ${align.centerV};
+  padding: ${spacing.large}px;
+  gap: ${spacing.large}px;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  width: 300px;
+  top: 100px;
+`;
+
+const Login = () => {
+  const { dispatch }: any = useMainContext();
+  const { openSnackbar } = useSnackbar();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [validation, setValidation] = useState<ILoginValidation>({
+    email: null,
+    password: null,
+  });
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const from = location.state?.from?.pathname || '/';
+
+  const handleLoginUser = async () => {
+    try {
+      const response = await loginUser({ email, password });
+      if (response.data.token) {
+        localStorage.setItem('alluvium_auth_token', response.data.token);
+        const token = decodeToken(response.data.token);
+        dispatch({
+          type: 'LOGIN',
+          payload: { name: token.name, type: token.type },
+        });
+        openSnackbar('Successfully logedin', 'success');
+        navigate('/');
+      } else if (response.data.message) {
+        openSnackbar(response.data.message, 'error');
+      }
+    } catch (error) {
+      console.log(error);
+      openSnackbar('Invalid credentials', 'error');
+    }
+  };
+  const handleEmailChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setEmail(event.target.value);
+    if (emailPattern.test(event.target.value)) {
+      setValidation({
+        ...validation,
+        email: null,
+      });
+    } else {
+      setValidation({
+        ...validation,
+        email: emailValidationMsg,
+      });
+    }
+  };
+
+  const handlePasswordChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setPassword(event.target.value);
+  };
 
   return (
     <MainSection>
@@ -37,24 +118,48 @@ const Login = () => {
         Lets get started ! Step into the action! Your adventure begins here! 😄
         🚀
       </WelcomeText>
-      <Button
-        component="label"
-        variant="contained"
-        onClick={() => {
-          setAuth({
-            user: { name: 'Pushkar' },
-            pwd: '2962',
-            roles: [2001, 5150],
-            accessToken: '',
-          });
-          navigate('/', { replace: true });
-        }}
-        startIcon={<GoogleIcon />}
-        sx={{ borderRadius: 20 }}
-      >
-        Sign in with Google
-      </Button>
-      <img src={MainCover} alt="main cover" />
+      <MainBodyContainer>
+        <StyledImage src={MainCover} alt="main cover" />
+        <LoginSection>
+          <TextField
+            error={!!validation.email}
+            label="Email"
+            variant="outlined"
+            focused
+            required
+            fullWidth
+            value={email}
+            onChange={handleEmailChange}
+            helperText={validation.email}
+          />
+          <TextField
+            id="Password"
+            required
+            label="Password"
+            variant="outlined"
+            fullWidth
+            type="password"
+            name="password"
+            onChange={handlePasswordChange}
+          />
+          <Button
+            component="label"
+            variant="contained"
+            startIcon={<LoginIcon />}
+            fullWidth
+            size="large"
+            onClick={handleLoginUser}
+            disabled={
+              !!validation.email ||
+              !email.trim() ||
+              !!validation.password ||
+              !password.trim()
+            }
+          >
+            Login
+          </Button>
+        </LoginSection>
+      </MainBodyContainer>
     </MainSection>
   );
 };

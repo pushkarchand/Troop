@@ -21,7 +21,7 @@
       "@utils/*": ["src/utils/*"],
       "@modules/*": ["src/modules/*"],
       "@context/*": ["src/context/*"],
-      "@types/*": ["src/types/*"],
+      "@datatypes/*": ["src/types/*"],
       "@api/*": ["src/api/*"]
     }
   },
