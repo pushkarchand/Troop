@@ -98,7 +98,8 @@ const Title = styled.div`
 const MyOverview = () => {
   const [isCreateProject, setIsCreateProject] = useState(false);
   const navigate = useNavigate();
-  const { projects, fetchProjects }: AppContextType = useMainContext();
+  const { user, projects, fetchProjects, logout }: AppContextType =
+    useMainContext();
   const { openSnackbar } = useSnackbar();
 
   const createProject = async (project: CreatePayload) => {
@@ -121,10 +122,11 @@ const MyOverview = () => {
 
   return (
     <Container>
-      <MainNavigation showProjects={false}/>
+      <MainNavigation showProjects={false} />
       <MainContainer>
         <Header>
-          <WelcomeUser>Wellcome, Pushkar</WelcomeUser>
+          <Button onClick={logout}>Logout</Button>
+          <WelcomeUser>Wellcome, {user?.name || 'user'}</WelcomeUser>
           <Button
             variant="contained"
             startIcon={<Add />}

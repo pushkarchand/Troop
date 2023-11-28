@@ -58,7 +58,7 @@ const LoginSection = styled.div`
 `;
 
 const Login = () => {
-  const { dispatch }: any = useMainContext();
+  const { setUser }: any = useMainContext();
   const { openSnackbar } = useSnackbar();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -71,17 +71,14 @@ const Login = () => {
   const handleLoginUser = async () => {
     try {
       const response = await loginUser({ email, password });
-      if (response.data.token) {
-        localStorage.setItem('alluvium_auth_token', response.data.token);
-        const token = decodeToken(response.data.token);
-        dispatch({
-          type: 'LOGIN',
-          payload: { name: token.name, type: token.type },
-        });
+      if (response.token) {
+        localStorage.setItem('alluvium_auth_token', response.token);
+        const token = decodeToken(response.token);
+        setUser({ name: token.name, type: token.type });
         openSnackbar('Successfully logedin', 'success');
         navigate('/');
-      } else if (response.data.message) {
-        openSnackbar(response.data.message, 'error');
+      } else if (response.message) {
+        openSnackbar(response.message, 'error');
       }
     } catch (error) {
       console.log(error);
