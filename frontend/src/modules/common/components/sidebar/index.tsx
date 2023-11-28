@@ -50,8 +50,9 @@ const SideBar = () => {
             onClick={() => {
               createNewSection();
             }}
+            sx={{ borderRadius: 20 }}
           >
-            Add new section
+            Add new
           </Button>
         </AddNewSction>
         <>

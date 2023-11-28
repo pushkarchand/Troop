@@ -126,6 +126,7 @@ const MyOverview = () => {
             onClick={() => {
               setIsCreateProject(true);
             }}
+            sx={{ borderRadius: 20 }}
           >
             Create new design system
           </Button>

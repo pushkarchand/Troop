@@ -23,7 +23,7 @@ export const sections = [
   },
   {
     title: 'My',
-    id: 1,
+    id: 2,
     pages: [
       {
         title: 'Colors',
@@ -45,7 +45,7 @@ export const sections = [
   },
   {
     title: 'Patterns',
-    id: 2,
+    id: 3,
     pages: [
       {
         title: 'Notifications',
@@ -67,7 +67,7 @@ export const sections = [
   },
   {
     title: 'Components',
-    id: 3,
+    id: 4,
     pages: [
       {
         title: 'Avatar',

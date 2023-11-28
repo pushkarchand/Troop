@@ -50,6 +50,7 @@ const Login = () => {
           navigate('/', { replace: true });
         }}
         startIcon={<GoogleIcon />}
+        sx={{ borderRadius: 20 }}
       >
         Sign in with Google
       </Button>
