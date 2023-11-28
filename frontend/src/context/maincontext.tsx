@@ -16,6 +16,7 @@ export interface AppContextType {
   setUser: (usr: User) => void;
   isLoggedIn: boolean;
   projects: Project[];
+  fetchProjects: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -59,7 +60,7 @@ const MainContextProvider: React.FC<MainContextProviderProps> = ({
 
   return (
     <AppContext.Provider
-      value={{ user, projects, setUser, isLoggedIn: !!user }}
+      value={{ user, projects, setUser, isLoggedIn: !!user, fetchProjects }}
     >
       {children}
     </AppContext.Provider>

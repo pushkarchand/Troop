@@ -17,7 +17,7 @@ const ProjectSchema = new mongoose.Schema(
     toJSON: {
       transform(doc, ret) {
         delete ret.__$;
-        delete doc.__v;
+        delete ret.__v;
         delete ret.$isNew;
       },
     },

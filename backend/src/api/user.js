@@ -17,29 +17,31 @@ module.exports = (app) => {
       });
       res.json(data);
     } catch (error) {
-      console.log(`/signup : ${error}`)
+      console.log(`/signup : ${error}`);
       res.status(500).json({ message: "Internal server error" });
     }
   });
 
   app.post("/login", async (req, res, next) => {
     try {
+      
       const { email, password } = req.body;
-
       const { data } = await service.SignIn({ email, password });
 
       res.json(data);
     } catch (error) {
+      console.log(`/signup : ${error}`);
       res.status(500).json({ message: "Internal server error" });
     }
   });
 
-  app.get("/profile", UserAuth, async (req, res, next) => {
+  app.get("/profile/:id", async (req, res, next) => {
     try {
-      const { _id } = req.user;
-      const { data } = await service.GetProfile({ _id });
+      const id = req.params.id;
+      const { data } = await service.GetProfile(id);
       res.json(data);
     } catch (error) {
+      console.log(`/profile : ${error}`);
       res.status(500).json({ message: "Internal server error" });
     }
   });

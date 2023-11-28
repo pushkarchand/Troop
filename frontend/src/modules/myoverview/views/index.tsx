@@ -98,14 +98,18 @@ const Title = styled.div`
 const MyOverview = () => {
   const [isCreateProject, setIsCreateProject] = useState(false);
   const navigate = useNavigate();
-  const { projects }: AppContextType = useMainContext();
+  const { projects, fetchProjects }: AppContextType = useMainContext();
   const { openSnackbar } = useSnackbar();
 
   const createProject = async (project: CreatePayload) => {
     try {
+      setIsCreateProject(false);
       const respose: Project = await post('/api/projects', project);
       openSnackbar('Successfully created new design system', 'success');
-      routeToProject(respose);
+      fetchProjects();
+      setTimeout(() => {
+        routeToProject(respose);
+      }, 1000);
     } catch (e) {
       console.log(e);
     }
@@ -174,7 +178,7 @@ const MyOverview = () => {
             setIsCreateProject(false);
           }}
           create={createProject}
-          title={"Create Project"}
+          title={'Create Project'}
         />
       ) : null}
     </Container>
