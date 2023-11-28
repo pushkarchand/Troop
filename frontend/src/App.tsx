@@ -8,12 +8,6 @@ import Project from '@modules/project/views';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { SnackbarProvider } from '@modules/common/components/snackbar';
 
-const ROLES = {
-  User: 2001,
-  Editor: 1984,
-  Admin: 5150,
-};
-
 function App() {
   // Override Mui theme from the root here
   const theme = createTheme({
@@ -48,10 +42,10 @@ function App() {
             <Route path="login" element={<Login />} />
 
             {/* we want to protect these routes */}
-            <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+            <Route element={<RequireAuth />}>
               <Route path="/" element={<MyOverview />} />
             </Route>
-            <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+            <Route element={<RequireAuth />}>
               <Route path="/project" element={<Project />} />
               <Route path="/project/:projectId" element={<Project />} />
               <Route
@@ -67,19 +61,6 @@ function App() {
                 element={<Project />}
               />
             </Route>
-
-            {/* <Route element={<RequireAuth allowedRoles={[ROLES.Editor]} />}>
-          <Route path="editor" element={<Editor />} />
-        </Route>
-
-
-        <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-          <Route path="admin" element={<Admin />} />
-        </Route>
-
-        <Route element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]} />}>
-          <Route path="lounge" element={<Lounge />} />
-        </Route> */}
 
             {/* catch all */}
             <Route path="*" element={<PageNotFound />} />

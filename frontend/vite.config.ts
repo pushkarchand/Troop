@@ -13,9 +13,6 @@ dotenv.config();
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    include: ['@emotion/react', '@emotion/styled'],
-  },
   resolve: {
     alias: {
       '@api': path.resolve(__dirname, 'src/api'),

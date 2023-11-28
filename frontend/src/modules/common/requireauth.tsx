@@ -2,7 +2,7 @@ import { useMainContext } from '@context/maincontext';
 import React from 'react';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 
-const RequireAuth = ({ allowedRoles }: any) => {
+const RequireAuth = () => {
   const { user }: any = useMainContext();
   const location = useLocation();
 

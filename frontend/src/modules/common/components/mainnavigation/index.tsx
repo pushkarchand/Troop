@@ -32,9 +32,11 @@ const MainLogo = styled.img`
   margin-left: ${spacing.medium}px;
 `;
 
-type Props = {};
+type Props = {
+  showProjects: boolean;
+};
 
-function MainNavigation({}: Props) {
+function MainNavigation({ showProjects }: Props) {
   const { projectId } = useParams();
   const { projects }: AppContextType = useMainContext();
   const [value, setvalue] = useState<string>(projectId || '');
@@ -49,22 +51,24 @@ function MainNavigation({}: Props) {
             navigate('/');
           }}
         />
-        <Select
-          value={value}
-          onChange={(e) => {
-            setvalue(e.target.value);
-          }}
-          displayEmpty
-          inputProps={{ 'aria-label': 'Without label' }}
-          disableUnderline
-          variant="standard"
-        >
-          {projects.map((option) => (
-            <MenuItem key={option._id} value={option.localId}>
-              {option.name}
-            </MenuItem>
-          ))}
-        </Select>
+        {showProjects ? (
+          <Select
+            value={value}
+            onChange={(e) => {
+              setvalue(e.target.value);
+            }}
+            displayEmpty
+            inputProps={{ 'aria-label': 'Without label' }}
+            disableUnderline
+            variant="standard"
+          >
+            {projects.map((option) => (
+              <MenuItem key={option._id} value={option.localId}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </Select>
+        ) : null}
       </LeftSection>
       <RightSection>
         <Avatar alt="Cindy Baker" src={UserAvatar} />

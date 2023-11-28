@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -8,6 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { CreatePayload } from 'src/types/project';
 import { TextField } from '@mui/material';
 import { useState } from 'react';
+import styled from '@emotion/styled';
 
 type CreateProps = {
   open: boolean;
@@ -15,6 +15,13 @@ type CreateProps = {
   close: () => void;
   create: (value: CreatePayload) => void;
 };
+
+const Box = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+`;
 
 export default function CreateModal({
   open,
@@ -41,16 +48,7 @@ export default function CreateModal({
     <Dialog fullWidth={true} maxWidth={'sm'} open={open} onClose={close}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <Box
-          noValidate
-          component="form"
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '20px',
-            padding: '20px 0',
-          }}
-        >
+        <Box>
           <TextField
             id="project-name"
             required

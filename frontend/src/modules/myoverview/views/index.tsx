@@ -121,7 +121,7 @@ const MyOverview = () => {
 
   return (
     <Container>
-      <MainNavigation />
+      <MainNavigation showProjects={false}/>
       <MainContainer>
         <Header>
           <WelcomeUser>Wellcome, Pushkar</WelcomeUser>

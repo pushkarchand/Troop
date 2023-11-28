@@ -77,7 +77,7 @@ const ProjectLanding = () => {
 
   return (
     <Container>
-      <MainNavigation />
+      <MainNavigation showProjects={true} />
       <MainContainer>
         <SideBar
           sections={projectDetails?.sections || []}
