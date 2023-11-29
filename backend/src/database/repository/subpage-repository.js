@@ -24,6 +24,11 @@ class SubPageRepository {
     return subPage;
   }
 
+  async FetchSubPageDetails(id) {
+    const subPage = await SubPageModel.findById(id);
+    return subPage;
+  }
+
   async FetchSubPages() {
     const subPages = await SubPageModel.find({});
     return subPages;
@@ -32,6 +37,11 @@ class SubPageRepository {
   async DeleteSubPage(id) {
     const deletedSubPage = await SubPageModel.findByIdAndDelete(id);
     return deletedSubPage;
+  }
+
+  async DeleteMany(ids) {
+    const deletedSubPages = await SubPageModel.deleteMany({ _id: { $in: ids } });
+    return deletedSubPages;
   }
 }
 

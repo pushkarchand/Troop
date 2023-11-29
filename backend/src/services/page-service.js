@@ -1,10 +1,12 @@
-const { PageRepository, SectionRepository } = require("../database");
+const { PageRepository, SectionRepository, SubPageRepository, ContentRepository } = require("../database");
 const { FormateData } = require("../utils");
 // All Business logic will be here
 class PageSevice {
   constructor() {
     this.repository = new PageRepository();
     this.sectionRespository = new SectionRepository();
+    this.subPageRepository = new SubPageRepository();
+    this.contentRepository = new ContentRepository();
   }
 
   async createPage(pageInputs) {
@@ -51,7 +53,20 @@ class PageSevice {
   }
 
   async deletePage(id) {
-    const page = await this.repository.DeletePage(id);
+    const page = await this.repository.FetchPageById(id);
+    if (!page) {
+      return FormateData({ code: "PAGE_NOT_FOUND" });
+    }
+    const subPages = [];
+    page.subPages.forEach((subPage) => {
+      subPages.push(subPage._id);
+    });
+    if (subPages.length > 0) {
+      // Delete subPages and it's content
+      await this.contentRepository.DeleteMany(subPagesIds);
+      await this.pageRepository.DeleteMany(subPagesIds);
+    }
+    await this.repository.DeletePage(id);
     return FormateData(page);
   }
 }
