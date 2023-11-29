@@ -17,6 +17,7 @@ export interface AppContextType {
   isLoggedIn: boolean;
   projects: Project[];
   fetchProjects: () => void;
+  logout: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -58,9 +59,21 @@ const MainContextProvider: React.FC<MainContextProviderProps> = ({
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem('alluvium_auth_token');
+    setUser(null);
+  };
+
   return (
     <AppContext.Provider
-      value={{ user, projects, setUser, isLoggedIn: !!user, fetchProjects }}
+      value={{
+        user,
+        projects,
+        setUser,
+        isLoggedIn: !!user,
+        fetchProjects,
+        logout,
+      }}
     >
       {children}
     </AppContext.Provider>
