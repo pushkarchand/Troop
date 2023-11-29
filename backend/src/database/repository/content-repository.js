@@ -30,6 +30,11 @@ class ContentRepository {
     const deletedContent = await ContentModel.findByIdAndDelete(id);
     return deletedContent;
   }
+
+  async DeleteMany(ids){
+    const deletedContent= await ContentModel.deleteMany({ subPageId: { $in: ids} });
+    return deletedContent
+  }
 }
 
 module.exports = ContentRepository;

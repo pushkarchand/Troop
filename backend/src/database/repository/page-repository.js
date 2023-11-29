@@ -42,6 +42,11 @@ class PageRepository {
     const deletedPage = await PageModel.findByIdAndDelete(id);
     return deletedPage;
   }
+
+  async DeleteMany(ids){
+    const deletedPages= await PageModel.deleteMany({ _id: { $in: ids} });
+    return deletedPages
+  }
 }
 
 module.exports = PageRepository;

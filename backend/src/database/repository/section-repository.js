@@ -42,6 +42,11 @@ class SectionRepository {
     const deletedSection = await SectionModel.findByIdAndDelete(id);
     return deletedSection;
   }
+
+  async DeleteMany(ids){
+    const deletedSections= await SectionModel.deleteMany({ _id: { $in: ids} });
+    return deletedSections
+  }
 }
 
 module.exports = SectionRepository;

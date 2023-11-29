@@ -33,6 +33,11 @@ class SubPageRepository {
     const deletedSubPage = await SubPageModel.findByIdAndDelete(id);
     return deletedSubPage;
   }
+
+  async DeleteMany(ids) {
+    const deletedSubPages = await SubPageModel.deleteMany({ _id: { $in: ids } });
+    return deletedSubPages;
+  }
 }
 
 module.exports = SubPageRepository;
