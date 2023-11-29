@@ -29,7 +29,7 @@ class SectionRepository {
   }
 
   async FetchSectionById(id) {
-    const section = await SectionModel.findById(id);
+    const section = await SectionModel.findById(id).populate("pages").populate("subpages").exec();
     return section;
   }
 

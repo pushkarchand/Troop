@@ -1,10 +1,11 @@
-const { SubPageRepository, PageRepository } = require("../database");
+const { SubPageRepository, PageRepository, ContentRepository } = require("../database");
 const { FormateData } = require("../utils");
 // All Business logic will be here
 class SubPageSevice {
   constructor() {
     this.repository = new SubPageRepository();
     this.pageRepository = new PageRepository();
+    this.contentRepository = new ContentRepository();
   }
 
   async createSubPage(subPageInputs) {
@@ -47,7 +48,9 @@ class SubPageSevice {
   }
 
   async findSubPageById(id) {
-    const subPage = await this.repository.SubPageDetails(id);
+    await this.contentRepository.DeleteMany([id]);
+    const subPage = await this.repository.DeleteSubPage(id);
+
     return FormateData(subPage);
   }
 }

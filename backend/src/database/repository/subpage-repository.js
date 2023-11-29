@@ -24,6 +24,11 @@ class SubPageRepository {
     return subPage;
   }
 
+  async FetchSubPageDetails(id) {
+    const subPage = await SubPageModel.findById(id);
+    return subPage;
+  }
+
   async FetchSubPages() {
     const subPages = await SubPageModel.find({});
     return subPages;
