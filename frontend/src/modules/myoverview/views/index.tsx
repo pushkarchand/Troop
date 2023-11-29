@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MainNavigation from '@modules/common/components/mainnavigation';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
-import { Button, css } from '@mui/material';
+import { Button, IconButton, Menu, MenuItem, css } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import color from '@utils/styles/color';
 import { templates } from '@utils/contants/designs';
@@ -15,6 +15,7 @@ import { post } from '@api/safe';
 import text from '@utils/styles/text';
 import { AppContextType, useMainContext } from '@context/maincontext';
 import { useSnackbar } from '@modules/common/components/snackbar';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const MainContainer = styled.div`
   display: flex;
@@ -64,6 +65,7 @@ const TemplatesList = styled.div`
 `;
 
 const CardTemplate = css`
+  position: relative;
   width: 180px;
   height: 190px;
   ${cursor.pointer};
@@ -95,12 +97,51 @@ const Title = styled.div`
   padding: ${spacing.medium}px ${spacing.small}px;
 `;
 
+const CardActionButton = styled(IconButton)`
+  position: absolute;
+  top: -10px;
+  right: -5px;
+`;
+
+const CustomMenuItem = styled(MenuItem)`
+  min-width: 175px !important;
+`;
+
 const MyOverview = () => {
   const [isCreateProject, setIsCreateProject] = useState(false);
   const navigate = useNavigate();
-  const { user, projects, fetchProjects, logout }: AppContextType =
-    useMainContext();
+  const { user, projects, fetchProjects }: AppContextType = useMainContext();
   const { openSnackbar } = useSnackbar();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleProjectAction = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAnchorEl(null);
+  };
+
+  const handleEditProject = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('edit project from here');
+  };
+
+  const handleCopyProject = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('copy project from here');
+  };
+
+  const handleDeleteProject = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('delete project from here');
+  };
 
   const createProject = async (project: CreatePayload) => {
     try {
@@ -125,7 +166,6 @@ const MyOverview = () => {
       <MainNavigation showProjects={false} />
       <MainContainer>
         <Header>
-          <Button onClick={logout}>Logout</Button>
           <WelcomeUser>Wellcome, {user?.name || 'user'}</WelcomeUser>
           <Button
             variant="contained"
@@ -168,6 +208,36 @@ const MyOverview = () => {
                   <img src={design1} alt={item.name} />
                 </TemplateImageWrapper>
                 <Title>{item.name}</Title>
+                <CardActionButton
+                  aria-label="fingerprint"
+                  color="primary"
+                  aria-controls={open ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  onClick={(event) => handleProjectAction(event)}
+                >
+                  <MoreHorizIcon />
+                </CardActionButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <CustomMenuItem onClick={handleEditProject}>
+                    Edit
+                  </CustomMenuItem>
+                  <CustomMenuItem onClick={handleCopyProject}>
+                    Copy
+                  </CustomMenuItem>
+                  <CustomMenuItem onClick={handleDeleteProject}>
+                    Delete
+                  </CustomMenuItem>
+                </Menu>
+                {/* TBD: Confirm box for delete is required */}
               </Design>
             ))}
           </TemplatesList>

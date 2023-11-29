@@ -49,7 +49,6 @@ const LoginSection = styled.div`
   padding: ${spacing.large}px;
   gap: ${spacing.large}px;
   width: 100%;
-  height: 100%;
   flex-direction: column;
   position: absolute;
   right: 0;
