@@ -7,6 +7,11 @@ import cursor from '@utils/styles/cursor';
 import { IconButton } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import align from '@utils/styles/align';
+import { SubPage } from '@datatypes/project';
+
+type SubPageProps = {
+  subPages: SubPage[];
+};
 
 const EditorContainer = styled.div`
   display: flex;
@@ -68,28 +73,23 @@ const Tab = styled.div<any>`
   box-sizing: border-box;
 `;
 
-export default function BasicTabs() {
-  const [currentTab, setCurrentTab] = React.useState(0);
+export default function SubPagesSection({ subPages }: SubPageProps) {
+  const [currentTab, setCurrentTab] = React.useState(subPages[0].localId);
 
   return (
     <TabsContainer>
       <Tabs>
-        <Tab
-          hasBorderBottom={currentTab === 0}
-          onClick={() => {
-            setCurrentTab(0);
-          }}
-        >
-          Implementation
-        </Tab>
-        <Tab
-          hasBorderBottom={currentTab === 1}
-          onClick={() => {
-            setCurrentTab(1);
-          }}
-        >
-          Usage
-        </Tab>
+        {subPages.map((item) => (
+          <Tab
+            key={item.localId}
+            hasBorderBottom={currentTab === item.localId}
+            onClick={() => {
+              setCurrentTab(item.localId);
+            }}
+          >
+            {item.name}
+          </Tab>
+        ))}
         <Tab>
           <IconButton aria-label="delete" size="small">
             <Add fontSize="inherit" />

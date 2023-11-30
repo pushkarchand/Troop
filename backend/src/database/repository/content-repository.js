@@ -8,6 +8,7 @@ class ContentRepository {
     });
 
     const contentResult = await content.save();
+    console.log("contentResult", contentResult, subPageId);
     return contentResult;
   }
 
@@ -17,7 +18,7 @@ class ContentRepository {
   }
 
   async ContentDetailsOnSubPageId(subPageId) {
-    const content = await ContentModel.findOne({ subPageId: subPageId });
+    const content = await ContentModel.findOne({ subPageId: subPageId }).lean();
     return content;
   }
 
@@ -31,9 +32,9 @@ class ContentRepository {
     return deletedContent;
   }
 
-  async DeleteMany(ids){
-    const deletedContent= await ContentModel.deleteMany({ subPageId: { $in: ids} });
-    return deletedContent
+  async DeleteMany(ids) {
+    const deletedContent = await ContentModel.deleteMany({ subPageId: { $in: ids } });
+    return deletedContent;
   }
 }
 

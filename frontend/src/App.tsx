@@ -49,15 +49,11 @@ function App() {
               <Route path="/project" element={<Project />} />
               <Route path="/project/:projectId" element={<Project />} />
               <Route
-                path="/project/:projectId/:section"
+                path="/project/:projectId/:pageId"
                 element={<Project />}
               />
               <Route
-                path="/project/:projectId/:section/:page"
-                element={<Project />}
-              />
-              <Route
-                path="/project/:projectId/:section/:page/:subpage"
+                path="/project/:projectId/:pageId/:subpageId"
                 element={<Project />}
               />
             </Route>

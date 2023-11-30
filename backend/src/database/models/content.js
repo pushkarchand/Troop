@@ -17,7 +17,9 @@ const contentSchema = new mongoose.Schema(
   {
     toJSON: {
       transform(doc, ret) {
+        delete ret.__$;
         delete ret.__v;
+        delete ret.$isNew;
       },
     },
     timestamps: true,

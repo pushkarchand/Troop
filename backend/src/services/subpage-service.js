@@ -16,15 +16,21 @@ class SubPageSevice {
       tooltip,
       pageId,
     });
+    const data = {
+      time: new Date().getTime(),
+      blocks: [],
+      version: "1",
+    };
+    await this.contentRepository.CreateContent({ data, subPageId: subPage._id });
     const PageDetails = await this.pageRepository.FetchPageById(pageId);
     PageDetails.subPages.push(subPage._id);
-    await this.pageRepository.UpdatePage({
+    const updatedPage = await this.pageRepository.UpdatePage({
       id: PageDetails.localId,
       name: PageDetails.name,
       description: PageDetails.description,
       subPages: PageDetails.subPages,
     });
-
+    
     return FormateData({ ...subPage });
   }
 

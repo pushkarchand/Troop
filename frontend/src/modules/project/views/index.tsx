@@ -4,10 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import MainNavigation from '@modules/common/components/mainnavigation';
 import SideBar from '@modules/common/components/sidebar';
 import styled from '@emotion/styled';
-import spacing from '@utils/styles/spacing';
-import BasicTabs from '../components/tabs';
 import { getSafe } from '@api/safe';
-import { Project } from '@datatypes/project';
+import { Page, Project } from '@datatypes/project';
+import PageDetails from '../components/pagedetails';
 
 const Container = styled.div`
   display: flex;
@@ -22,40 +21,28 @@ const MainContainer = styled.div`
   height: 100%;
 `;
 
-const HeaderSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: ${spacing.small}px ${spacing.large}px;
-  box-sizing: border-box;
-  gap: ${spacing.small}px;
-`;
-
-const CenterSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: calc(100% - 250px);
-`;
-
-const BorderlessInput = styled.input`
-  border: none;
-  outline: none;
-  padding: 8px;
-  font-size: 24px;
-`;
-
-const BorderlessTextarea = styled.textarea`
-  border: none;
-  outline: none;
-  padding: 8px;
-`;
+const getCurrentPage = (
+  project: Project | null,
+  pageId: string | undefined
+): any => {
+  if (project && project.sections.length > 0 && pageId) {
+    let selectedPage = null;
+    project.sections.forEach((section) => {
+      selectedPage = section.pages.find((item) => item.localId === pageId);
+    });
+    return selectedPage;
+  } else {
+    return null;
+  }
+};
 
 const ProjectLanding = () => {
-  const [name, setName] = useState('Button');
-  const [description, setDescription] = useState('');
   const [projectDetails, setProjectDetails] = useState<Project | null>(null);
-  const { projectId } = useParams();
+  const { projectId, pageId } = useParams();
+  const [currentPage, setCurrentPage] = useState<Page | null>(
+    getCurrentPage(projectDetails, pageId)
+  );
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,6 +52,14 @@ const ProjectLanding = () => {
       navigate('/');
     }
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(getCurrentPage(projectDetails, pageId));
+  }, [projectDetails]);
+
+  const changeInPage = (id: string) => {
+    setCurrentPage({...getCurrentPage(projectDetails, id)});
+  };
 
   const fetchProjectDetails = async () => {
     try {
@@ -83,26 +78,10 @@ const ProjectLanding = () => {
           sections={projectDetails?.sections || []}
           projectId={projectDetails?._id || ''}
           updateDetails={fetchProjectDetails}
+          changeInPage={changeInPage}
         />
-        <CenterSection>
-          <HeaderSection>
-            <BorderlessInput
-              placeholder="Page"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-            <BorderlessTextarea
-              placeholder="Add description"
-              value={description}
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-            />
-          </HeaderSection>
-          <BasicTabs />
-        </CenterSection>
+      
+        {currentPage ? <PageDetails page={currentPage} /> : null}
       </MainContainer>
     </Container>
   );

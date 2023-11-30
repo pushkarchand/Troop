@@ -1,3 +1,4 @@
+const SubPageService = require("./subpage-service");
 const { PageRepository, SectionRepository, SubPageRepository, ContentRepository } = require("../database");
 const { FormateData } = require("../utils");
 // All Business logic will be here
@@ -7,6 +8,7 @@ class PageSevice {
     this.sectionRespository = new SectionRepository();
     this.subPageRepository = new SubPageRepository();
     this.contentRepository = new ContentRepository();
+    this.subPageService = new SubPageService();
   }
 
   async createPage(pageInputs) {
@@ -17,8 +19,10 @@ class PageSevice {
       description,
       sectionId,
     });
+
     const sectionDetails = await this.sectionRespository.FetchSectionById(sectionId);
-    sectionDetails.pages.push(page._id);
+    await this.subPageService.createSubPage({ name: "Implementation", tooltip: "Implementation", pageId: page._id }),
+      sectionDetails.pages.push(page._id);
     await this.sectionRespository.UpdateSection({
       id: sectionDetails.localId,
       name: sectionDetails.name,
