@@ -16,6 +16,7 @@ import text from '@utils/styles/text';
 import { AppContextType, useMainContext } from '@context/maincontext';
 import { useSnackbar } from '@modules/common/components/snackbar';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import ConfirmModal from '@modules/common/components/confirmModal';
 
 const MainContainer = styled.div`
   display: flex;
@@ -114,6 +115,7 @@ const MyOverview = () => {
   const { openSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const handleProjectAction = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -140,7 +142,7 @@ const MyOverview = () => {
   const handleDeleteProject = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log('delete project from here');
+    setConfirmModalOpen(true);
   };
 
   const createProject = async (project: CreatePayload) => {
@@ -159,6 +161,10 @@ const MyOverview = () => {
 
   const routeToProject = (item: Project) => {
     navigate(`/project/${item.localId}`);
+  };
+
+  const handleConfirmDelte = () => {
+    console.log('Delete the project from here');
   };
 
   return (
@@ -231,7 +237,7 @@ const MyOverview = () => {
                     Edit
                   </CustomMenuItem>
                   <CustomMenuItem onClick={handleCopyProject}>
-                    Copy
+                    Duplicate
                   </CustomMenuItem>
                   <CustomMenuItem onClick={handleDeleteProject}>
                     Delete
@@ -253,6 +259,13 @@ const MyOverview = () => {
           title={'Create Project'}
         />
       ) : null}
+      <ConfirmModal
+        open={confirmModalOpen}
+        title="Are you sure?"
+        message="Dummy message"
+        close={() => setConfirmModalOpen(false)}
+        confirm={handleConfirmDelte}
+      />
     </Container>
   );
 };
