@@ -4,10 +4,12 @@ import color from '@utils/styles/color';
 import spacing from '@utils/styles/spacing';
 import cursor from '@utils/styles/cursor';
 import AddIcon from '@mui/icons-material/Add';
-import { CreatePayload, Section } from '@datatypes/project';
+import { CreatePayload, Page, Section } from '@datatypes/project';
 import CreateModal from '../createmodal';
 import { post } from '@api/safe';
 import { IconButton, Tooltip } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import align from '@utils/styles/align';
 
 const SectionContainer = styled.div`
   display: flex;
@@ -33,13 +35,15 @@ const Header = styled.div`
   }
 `;
 
-const PageTitle = styled.div`
+const PageTitle = styled.div<{ selected: boolean }>`
   font-size: 13px;
   color: ${color.gray900};
   ${cursor.pointer};
   padding: 2px ${spacing.xsmall}px;
+  background: ${({ selected }) => (selected ? `${color.gray200}` : 'inherit')};
   &:hover {
-    background-color: ${color.gray100};
+    background-color: ${({ selected }) =>
+      selected ? `${color.gray200}` : `${color.gray100}`};
   }
 `;
 
@@ -53,20 +57,34 @@ const PagesConatiner = styled.div`
 type Props = {
   item: Section;
   updateDetails: () => void;
+  changeInPage: (id: string) => void;
 };
 
-const SectionComponent = ({ item, updateDetails }: Props) => {
+const SectionComponent = ({ item, updateDetails, changeInPage }: Props) => {
+  const { projectId, pageId } = useParams();
+  const navigate = useNavigate();
   const [isCreatePage, setIsCreatePage] = useState(false);
 
   const createNewPage = async (payload: CreatePayload) => {
     try {
       const createPagePayload = { ...payload, sectionId: item._id };
-      const response = await post('/api/pages', createPagePayload);
+      await post('/api/pages', createPagePayload);
       updateDetails();
       setIsCreatePage(false);
     } catch (error: any) {
       console.log(error);
       setIsCreatePage(false);
+    }
+  };
+
+  const setSelectedPage = (currentPage: Page) => {
+    changeInPage(currentPage.localId);
+    if (currentPage.subPages.length > 0) {
+      navigate(
+        `/project/${projectId}/${currentPage.localId}/${currentPage.subPages[0].localId}`
+      );
+    } else {
+      navigate(`/project/${projectId}/${currentPage.localId}`);
     }
   };
 
@@ -85,8 +103,16 @@ const SectionComponent = ({ item, updateDetails }: Props) => {
         </Tooltip>
       </Header>
       <PagesConatiner>
-        {item.pages.map((page) => (
-          <PageTitle key={page._id}>{page.name}</PageTitle>
+        {item.pages.map((page: Page) => (
+          <PageTitle
+            key={page._id}
+            selected={pageId === page.localId}
+            onClick={() => {
+              setSelectedPage(page);
+            }}
+          >
+            {page.name}
+          </PageTitle>
         ))}
       </PagesConatiner>
       {isCreatePage ? (

@@ -13,6 +13,7 @@ type SectionProps = {
   sections: Section[];
   projectId: string;
   updateDetails: () => void;
+  changeInPage: (id: string) => void;
 };
 
 // styled componets
@@ -43,13 +44,13 @@ const AddNewSction = styled.div`
   margin: ${spacing.medium}px 0;
 `;
 
-const SideBar = ({ sections, projectId, updateDetails }: SectionProps) => {
+const SideBar = ({ sections, projectId, updateDetails, changeInPage }: SectionProps) => {
   const [isCreateSection, setIsCreateSection] = useState(false);
 
   const createNewSection = async (payload: CreatePayload) => {
     try {
       const createPagePayload = { ...payload, projectId };
-      const response = await post('/api/sections', createPagePayload);
+      await post('/api/sections', createPagePayload);
       setIsCreateSection(false);
       updateDetails();
     } catch (error: any) {
@@ -80,6 +81,7 @@ const SideBar = ({ sections, projectId, updateDetails }: SectionProps) => {
                 item={item}
                 key={item._id}
                 updateDetails={updateDetails}
+                changeInPage={changeInPage}
               />
             ))}
         </>

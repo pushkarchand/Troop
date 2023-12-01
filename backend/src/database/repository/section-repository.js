@@ -29,12 +29,21 @@ class SectionRepository {
   }
 
   async FetchSectionById(id) {
-    const section = await SectionModel.findById(id).populate("pages").populate("subpages").exec();
+    const section = await SectionModel.findById(id)
+      .populate({
+        path: "pages",
+        model: "Page",
+        populate: {
+          path: "subPages",
+          model: "SubPage",
+        },
+      })
+      .exec();
     return section;
   }
 
   async FetchSections() {
-    const sections = await SectionModel.find({}).populate('pages').exec();
+    const sections = await SectionModel.find({}).populate("pages").exec();
     return sections;
   }
 
@@ -43,9 +52,9 @@ class SectionRepository {
     return deletedSection;
   }
 
-  async DeleteMany(ids){
-    const deletedSections= await SectionModel.deleteMany({ _id: { $in: ids} });
-    return deletedSections
+  async DeleteMany(ids) {
+    const deletedSections = await SectionModel.deleteMany({ _id: { $in: ids } });
+    return deletedSections;
   }
 }
 

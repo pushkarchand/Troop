@@ -24,7 +24,7 @@ export type Section = {
   name: string;
   description: string;
   projectId: string;
-  pages: any[];
+  pages: Page[];
   localId: string;
   createdAt: string;
   updatedAt: string;
