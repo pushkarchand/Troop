@@ -16,6 +16,7 @@ class SubPageSevice {
       tooltip,
       pageId,
     });
+    console.log("SubPage", subPage);
     const data = {
       time: new Date().getTime(),
       blocks: [],
@@ -25,12 +26,12 @@ class SubPageSevice {
     const PageDetails = await this.pageRepository.FetchPageById(pageId);
     PageDetails.subPages.push(subPage._id);
     const updatedPage = await this.pageRepository.UpdatePage({
-      id: PageDetails.localId,
+      id: PageDetails._id,
       name: PageDetails.name,
       description: PageDetails.description,
       subPages: PageDetails.subPages,
     });
-    
+
     return FormateData({ ...subPage });
   }
 

@@ -25,7 +25,6 @@ class UserRepository {
   }
 
   async FinduserById(id) {
-    console.log("id", id);
     const existingUser = await UserModel.findById(id);
     return existingUser;
   }

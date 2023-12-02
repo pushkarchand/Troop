@@ -2,6 +2,7 @@ const { SubPageModel } = require("../models");
 
 class SubPageRepository {
   async CreateSubPage({ name, tooltip, pageId, user }) {
+    console.log("CreateSubPage", { name, tooltip, pageId, user });
     const subPage = new SubPageModel({
       name,
       tooltip,

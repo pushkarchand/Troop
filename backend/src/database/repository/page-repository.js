@@ -15,11 +15,7 @@ class PageRepository {
   }
 
   async UpdatePage({ id, name, description, subPages }) {
-    const updatedPage = await PageModel.findOneAndUpdate(
-      { localId: id },
-      { name, description, subPages },
-      { new: true }
-    );
+    const updatedPage = await PageModel.findByIdAndUpdate(id, { name, description, subPages }, { new: true });
     return updatedPage;
   }
 
@@ -39,13 +35,13 @@ class PageRepository {
   }
 
   async DeletePage(id) {
-    const deletedPage = await PageModel.findByIdAndDelete(id).populate('subpage').exec();
+    const deletedPage = await PageModel.findByIdAndDelete(id).populate("subpage").exec();
     return deletedPage;
   }
 
-  async DeleteMany(ids){
-    const deletedPages= await PageModel.deleteMany({ _id: { $in: ids} });
-    return deletedPages
+  async DeleteMany(ids) {
+    const deletedPages = await PageModel.deleteMany({ _id: { $in: ids } });
+    return deletedPages;
   }
 }
 

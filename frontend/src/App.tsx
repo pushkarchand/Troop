@@ -53,7 +53,7 @@ function App() {
                 element={<Project />}
               />
               <Route
-                path="/project/:projectId/:pageId/:subpageId"
+                path="/project/:projectId/:pageId/:subPageId"
                 element={<Project />}
               />
             </Route>

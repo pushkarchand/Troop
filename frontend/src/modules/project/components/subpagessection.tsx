@@ -7,10 +7,18 @@ import cursor from '@utils/styles/cursor';
 import { IconButton } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import align from '@utils/styles/align';
-import { SubPage } from '@datatypes/project';
+import { Content, CreatePayload, Page, SubPage } from '@datatypes/project';
+import { getSafe, post, putSafe } from '@api/safe';
+import { useEffect, useState } from 'react';
+import { OutputData } from '@editorjs/editorjs';
+import CreateModal from '@modules/common/components/createmodal';
 
 type SubPageProps = {
   subPages: SubPage[];
+  currentSubPage: SubPage | null;
+  currentPage: Page;
+  changeInSubPage: (id: string) => void;
+  updateDetails: () => void;
 };
 
 const EditorContainer = styled.div`
@@ -73,33 +81,110 @@ const Tab = styled.div<any>`
   box-sizing: border-box;
 `;
 
-export default function SubPagesSection({ subPages }: SubPageProps) {
-  const [currentTab, setCurrentTab] = React.useState(subPages[0].localId);
+export default function SubPagesSection({
+  subPages,
+  changeInSubPage,
+  currentSubPage,
+  currentPage,
+  updateDetails,
+}: SubPageProps) {
+  const [currentTab, setCurrentTab] = useState(currentSubPage?._id);
+  const [contentDetails, setContentDetails] = useState<Content | null>(null);
+  const [iscreateSubPage, setIscreateSubPage] = useState(false);
+
+  useEffect(() => {
+    if (currentSubPage) {
+      fetchContentDetails();
+      setCurrentTab(currentSubPage._id);
+    }
+  }, [currentSubPage]);
+
+  const fetchContentDetails = async () => {
+    try {
+      const response = await getSafe(`/api/contents/${currentSubPage?._id}`);
+      setContentDetails(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const changeInData = (outputData: OutputData) => {
+    const targetData: any = { ...contentDetails, data: outputData };
+    setContentDetails(targetData);
+    updateContent(outputData);
+  };
+
+  const updateContent = async (outputData: OutputData) => {
+    try {
+      const payload = {
+        id: contentDetails?._id,
+        data: outputData,
+      };
+      await putSafe('/api/contents', payload);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createNewSubPage = async (payload: CreatePayload) => {
+    try {
+      const data = {
+        name: payload.name,
+        tooltip: payload.description,
+        pageId: currentPage._id,
+      };
+      await post(`/api/subpages`, data);
+      setIscreateSubPage(false);
+      updateDetails();
+    } catch (error) {
+      setIscreateSubPage(false);
+      console.log(error);
+    }
+  };
 
   return (
     <TabsContainer>
       <Tabs>
         {subPages.map((item) => (
           <Tab
-            key={item.localId}
-            hasBorderBottom={currentTab === item.localId}
+            key={item._id}
+            hasBorderBottom={currentTab === item._id}
             onClick={() => {
-              setCurrentTab(item.localId);
+              setCurrentTab(item._id);
+              changeInSubPage(item._id);
             }}
           >
             {item.name}
           </Tab>
         ))}
         <Tab>
-          <IconButton aria-label="delete" size="small">
+          <IconButton
+            aria-label="delete"
+            size="small"
+            onClick={() => {
+              setIscreateSubPage(true);
+            }}
+          >
             <Add fontSize="inherit" />
           </IconButton>
         </Tab>
       </Tabs>
 
       <EditorContainer>
-        <ReichTextEditor />
+        {contentDetails && currentTab === contentDetails.subPageId ? (
+          <ReichTextEditor data={contentDetails.data} setData={changeInData} />
+        ) : null}
       </EditorContainer>
+      {
+        <CreateModal
+          open={iscreateSubPage}
+          close={() => {
+            setIscreateSubPage(false);
+          }}
+          create={createNewSubPage}
+          title={'Create sub page'}
+        />
+      }
     </TabsContainer>
   );
 }

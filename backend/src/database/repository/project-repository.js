@@ -61,7 +61,20 @@ class ProjectRepository {
   }
 
   async FetchProjects() {
-    const projects = await ProjectModel.find({});
+    const projects = await ProjectModel.find({})
+      .populate({
+        path: "sections",
+        model: "Section",
+        populate: {
+          path: "pages",
+          model: "Page",
+          populate: {
+            path: "subPages",
+            model: "SubPage",
+          },
+        },
+      })
+      .exec();
     return projects;
   }
 

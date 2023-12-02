@@ -1,3 +1,4 @@
+import { OutputData } from '@editorjs/editorjs';
 import { User } from './user';
 
 export type CreatePayload = {
@@ -49,4 +50,11 @@ export type SubPage = {
   localId: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type Content = {
+  _id: string;
+  localId: string;
+  subPageId: string;
+  data: OutputData;
 };

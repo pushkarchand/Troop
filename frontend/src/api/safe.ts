@@ -18,6 +18,15 @@ export const post = async (url: string, payload: any) => {
   }
 };
 
+export const putSafe = async (url: string, payload: any) => {
+  try {
+    const response = await axios.put(`${baseUrl}${url}`, payload, axiosOptions);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`Axios error! ${error.message}`);
+  }
+};
+
 export const getSafe = async (url: string) => {
   try {
     const response = await axios.get(`${baseUrl}${url}`, axiosOptions);

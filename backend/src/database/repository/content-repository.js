@@ -8,12 +8,11 @@ class ContentRepository {
     });
 
     const contentResult = await content.save();
-    console.log("contentResult", contentResult, subPageId);
     return contentResult;
   }
 
   async UpdateContent({ id, data }) {
-    const updatedContent = await ContentModel.findOneAndUpdate({ localId: id }, { data }, { new: true });
+    const updatedContent = await ContentModel.findByIdAndUpdate(id, { data }, { new: true });
     return updatedContent;
   }
 

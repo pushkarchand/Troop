@@ -30,7 +30,6 @@ class CustomerService {
   async SignUp(userInputs) {
     const { email, password, phone, firstName, lastName, type } = userInputs;
     const existingCustomer = await this.repository.Finduser(email);
-    console.log("existingCustomer", existingCustomer);
     if (!existingCustomer) {
       // create salt
       let salt = await GenerateSalt();

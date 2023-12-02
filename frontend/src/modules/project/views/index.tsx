@@ -5,8 +5,10 @@ import MainNavigation from '@modules/common/components/mainnavigation';
 import SideBar from '@modules/common/components/sidebar';
 import styled from '@emotion/styled';
 import { getSafe } from '@api/safe';
-import { Page, Project } from '@datatypes/project';
+import { Page, Project, SubPage } from '@datatypes/project';
 import PageDetails from '../components/pagedetails';
+import EmptyPage from '../components/emptypage';
+import { AppContextType, useMainContext } from '@context/maincontext';
 
 const Container = styled.div`
   display: flex;
@@ -21,27 +23,14 @@ const MainContainer = styled.div`
   height: 100%;
 `;
 
-const getCurrentPage = (
-  project: Project | null,
-  pageId: string | undefined
-): any => {
-  if (project && project.sections.length > 0 && pageId) {
-    let selectedPage = null;
-    project.sections.forEach((section) => {
-      selectedPage = section.pages.find((item) => item.localId === pageId);
-    });
-    return selectedPage;
-  } else {
-    return null;
-  }
-};
-
 const ProjectLanding = () => {
   const [projectDetails, setProjectDetails] = useState<Project | null>(null);
-  const { projectId, pageId } = useParams();
-  const [currentPage, setCurrentPage] = useState<Page | null>(
-    getCurrentPage(projectDetails, pageId)
-  );
+  const { projectId, pageId, subPageId } = useParams();
+  const { projects }: AppContextType = useMainContext();
+  const [noSection, setNoSection] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState<Page | null>(null);
+  const [currentSubPage, setCurrentSubPage] = useState<SubPage | null>(null);
 
   const navigate = useNavigate();
 
@@ -54,12 +43,67 @@ const ProjectLanding = () => {
   }, []);
 
   useEffect(() => {
-    setCurrentPage(getCurrentPage(projectDetails, pageId));
+    getCurrentPageDetails(projectDetails, pageId, subPageId);
   }, [projectDetails]);
 
   const changeInPage = (id: string) => {
-    setCurrentPage({...getCurrentPage(projectDetails, id)});
+    getCurrentPageDetails(projectDetails, id, '');
   };
+
+  const changeInSubPage = (id: string) => {
+    const subPage =
+      currentPage?.subPages.find((page) => page._id === id) || null;
+    if (subPage && currentPage) {
+      navigate(
+        `/project/${projectId}/${currentPage.localId}/${subPage.localId}`
+      );
+      setCurrentSubPage(subPage);
+    }
+  };
+
+  function getCurrentPageDetails(
+    projectData: Project | null,
+    argPageId: string | undefined,
+    argSubPageId: string | undefined
+  ) {
+    // Find the section containing the specified pageId
+    const section = projectData?.sections.find((section) =>
+      section.pages.some((page) => page.localId === argPageId)
+    );
+    if (section) {
+      // If the section is found, find the specified page
+      const page = section.pages.find((page) => page.localId === argPageId);
+
+      if (page) {
+        // If the page is found, find the specified subPage or select the first subPage
+        const subPage = argSubPageId
+          ? page.subPages.find((subPage) => subPage.localId === argSubPageId)
+          : page.subPages[0];
+        setCurrentSubPage(subPage || null);
+        setCurrentPage(page);
+        if (subPage) {
+          navigate(`/project/${projectId}/${page.localId}/${subPage?.localId}`);
+        }
+      }
+    } else {
+      // If the specified pageId or subPageId is not found, select the first available section, page, and subPage
+      const firstSection = projectData?.sections[0];
+      const firstPage = firstSection?.pages[0];
+      const firstSubPage = firstPage?.subPages[0]; // Assuming there's at least one subPage
+      console.log(firstPage, firstSubPage);
+      setCurrentPage(firstPage || null);
+      setCurrentSubPage(firstSubPage || null);
+      if (firstPage && firstSubPage) {
+        navigate(
+          `/project/${projectId}/${firstPage.localId}/${firstSubPage.localId}`
+        );
+      } else if (firstPage) {
+        navigate(`/project/${projectId}/${firstPage.localId}`);
+      } else {
+        setNoSection(true);
+      }
+    }
+  }
 
   const fetchProjectDetails = async () => {
     try {
@@ -80,8 +124,16 @@ const ProjectLanding = () => {
           updateDetails={fetchProjectDetails}
           changeInPage={changeInPage}
         />
-      
-        {currentPage ? <PageDetails page={currentPage} /> : null}
+        {currentPage ? (
+          <PageDetails
+            page={currentPage}
+            currentSubPage={currentSubPage}
+            changeInSubPage={changeInSubPage}
+            updateDetails={fetchProjectDetails}
+          />
+        ) : (
+          <EmptyPage noSection={noSection} />
+        )}
       </MainContainer>
     </Container>
   );

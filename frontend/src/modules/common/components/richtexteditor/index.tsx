@@ -1,7 +1,12 @@
 import React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import EditorJS from '@editorjs/editorjs';
+import { useEffect, useRef } from 'react';
+import EditorJS, { OutputData } from '@editorjs/editorjs';
 import { EDITOR_JS_TOOLS } from './constants';
+
+type EditorProps = {
+  data: OutputData;
+  setData: (data: OutputData) => void;
+};
 
 const getDefaultValues = () => {
   const data = localStorage.getItem('defaultData');
@@ -17,9 +22,8 @@ const setDefaultDataValues = (value: any) => {
   localStorage.setItem('defaultData', JSON.stringify(value));
 };
 
-const EditorComponent = () => {
+const EditorComponent = ({ data, setData }: EditorProps) => {
   const ejInstance: any = useRef();
-  const [data, setdata] = useState<any>(getDefaultValues());
 
   const initEditor = () => {
     const editor = new EditorJS({
@@ -32,8 +36,9 @@ const EditorComponent = () => {
         if (editor && editor.saver && typeof editor.saver.save === 'function') {
           // Check if `editor` and `editor.saver` are defined, and if `save` is a function
           let content = await editor.saver.save();
-          setdata(JSON.parse(JSON.stringify(content)));
-          setDefaultDataValues(content);
+          // setdata(JSON.parse(JSON.stringify(content)));
+          // setDefaultDataValues(content);
+          setData(content);
         } else {
           console.error('Editor or saver is not properly initialized.');
         }

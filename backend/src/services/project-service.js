@@ -82,7 +82,6 @@ class ProjectService {
 
     // Finally, delete the project
     const deletedProject = await this.repository.DeleteProject({ _id: project._id });
-    console.log("Delete Project", sections, pages, subPages);
     return FormateData(deletedProject);
   }
   catch(error) {

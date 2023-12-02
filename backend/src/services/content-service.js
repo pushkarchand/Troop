@@ -31,7 +31,6 @@ class ContentSevice {
 
   async contentDetailsOnSubPageId(id) {
     const content = await this.repository.ContentDetailsOnSubPageId(id);
-    console.log("content", content);
     const targetData = [];
     await Promise.all(
       content.data.blocks.map(async (item) => {

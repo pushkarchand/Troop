@@ -153,7 +153,7 @@ const MyOverview = () => {
       fetchProjects();
       setTimeout(() => {
         routeToProject(respose);
-      }, 1000);
+      }, 200);
     } catch (e) {
       console.log(e);
     }
