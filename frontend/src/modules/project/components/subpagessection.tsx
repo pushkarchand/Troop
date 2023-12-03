@@ -188,12 +188,12 @@ export default function SubPagesSection({
       console.log(error);
     }
   };
-
+  
   const updateSubPage = async (argPayload: CreatePayload) => {
     try {
       const payload = {
         name: argPayload.name,
-        description: argPayload.description,
+        tooltip: argPayload.description,
         id: editedSubPage?._id,
       };
       const response = await putSafe('/api/subpages', payload);
