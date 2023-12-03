@@ -70,8 +70,8 @@ class ProjectService {
     });
     if (subPages.length > 0) {
       // Delete subPages and it's content
-      await this.contentRepository.DeleteMany(subPagesIds);
-      await this.pageRepository.DeleteMany(subPagesIds);
+      await this.contentRepository.DeleteMany(subPages);
+      await this.subPageRepository.DeleteMany(subPages);
     }
 
     // Delete pages

@@ -16,7 +16,6 @@ class SubPageSevice {
       tooltip,
       pageId,
     });
-    console.log("SubPage", subPage);
     const data = {
       time: new Date().getTime(),
       blocks: [],
@@ -36,14 +35,12 @@ class SubPageSevice {
   }
 
   async updateSubPage(subPageInputs) {
-    const { id, name, tooltip, publishedOn, order } = subPageInputs;
+    const { id, name, tooltip } = subPageInputs;
 
     const subPage = await this.repository.UpdateSubPage({
       id,
       name,
       tooltip,
-      publishedOn,
-      order,
     });
 
     return FormateData({ ...subPage });
@@ -55,9 +52,14 @@ class SubPageSevice {
   }
 
   async findSubPageById(id) {
+    const subPage = await this.repository.SubPageDetails([id]);
+
+    return FormateData(subPage);
+  }
+
+  async deleteSubPage(id) {
     await this.contentRepository.DeleteMany([id]);
     const subPage = await this.repository.DeleteSubPage(id);
-
     return FormateData(subPage);
   }
 }

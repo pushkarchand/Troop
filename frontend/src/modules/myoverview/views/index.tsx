@@ -3,20 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import MainNavigation from '@modules/common/components/mainnavigation';
 import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
-import { Button, IconButton, Menu, MenuItem, css } from '@mui/material';
+import { Button, css } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import color from '@utils/styles/color';
 import { templates } from '@utils/contants/designs';
-import design1 from '@assets/images/design1.png';
 import cursor from '@utils/styles/cursor';
-import CreateProject from '../../common/components/createmodal';
+import CreateEditProject from '../../common/components/editcreatemodal';
 import { Project, CreatePayload } from '@datatypes/project';
-import { post } from '@api/safe';
+import { deleteSafe, post, putSafe } from '@api/safe';
 import text from '@utils/styles/text';
 import { AppContextType, useMainContext } from '@context/maincontext';
 import { useSnackbar } from '@modules/common/components/snackbar';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ConfirmModal from '@modules/common/components/confirmModal';
+import ProjectItem from '../components/projectitem';
 
 const MainContainer = styled.div`
   display: flex;
@@ -89,67 +88,26 @@ const TemplateImageWrapper = styled.div`
   padding-top: ${spacing.small}px;
 `;
 
-const Design = styled.div`
-  ${CardTemplate}
-  background-color: ${color.purple0};
-`;
-
 const Title = styled.div`
   padding: ${spacing.medium}px ${spacing.small}px;
 `;
 
-const CardActionButton = styled(IconButton)`
-  position: absolute;
-  top: -10px;
-  right: -5px;
-`;
-
-const CustomMenuItem = styled(MenuItem)`
-  min-width: 175px !important;
-`;
+const projectAPI = '/api/projects';
 
 const MyOverview = () => {
-  const [isCreateProject, setIsCreateProject] = useState(false);
-  const navigate = useNavigate();
-  const { user, projects, fetchProjects }: AppContextType = useMainContext();
   const { openSnackbar } = useSnackbar();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+  const [isCreateProject, setIsCreateProject] = useState(false);
+  const { user, projects, fetchProjects }: AppContextType = useMainContext();
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const handleProjectAction = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setAnchorEl(null);
-  };
-
-  const handleEditProject = (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log('edit project from here');
-  };
-
-  const handleCopyProject = (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log('copy project from here');
-  };
-
-  const handleDeleteProject = (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setConfirmModalOpen(true);
-  };
+  const [editProject, setEditProject] = useState<Project | null>(null);
+  const [deleteProject, setDeleteProject] = useState<Project | null>(null);
 
   const createProject = async (project: CreatePayload) => {
     try {
       setIsCreateProject(false);
-      const respose: Project = await post('/api/projects', project);
-      openSnackbar('Successfully created new design system', 'success');
+      const respose: Project = await post(projectAPI, project);
+      openSnackbar(`Successfully created ${respose.name}`, 'success');
       fetchProjects();
       setTimeout(() => {
         routeToProject(respose);
@@ -163,8 +121,43 @@ const MyOverview = () => {
     navigate(`/project/${item.localId}`);
   };
 
-  const handleConfirmDelte = () => {
-    console.log('Delete the project from here');
+  const handleConfirmDelte = async () => {
+    try {
+      setConfirmModalOpen(false);
+      const response = await deleteSafe(`${projectAPI}/${deleteProject?._id}`);
+      openSnackbar(`Successfully deleted ${response.name}`, 'success');
+      fetchProjects();
+    } catch (error) {
+      setConfirmModalOpen(false);
+      openSnackbar(`Something went wrong`, 'error');
+      console.log(error);
+    }
+  };
+
+  const handleDeleteProject = (item: Project) => {
+    setConfirmModalOpen(true);
+    setDeleteProject(item);
+  };
+
+  const handleEditProject = (item: Project) => {
+    setEditProject(item);
+  };
+
+  const editSelectedProject = async (item: CreatePayload) => {
+    try {
+      const payload = {
+        id: editProject?._id,
+        name: item.name,
+        description: item.description,
+        sections: editProject?.sections.map((section) => section._id),
+      };
+      setEditProject(null);
+      await putSafe(projectAPI, payload);
+      fetchProjects();
+    } catch (error) {
+      setEditProject(null);
+      console.log(error);
+    }
   };
 
   return (
@@ -204,53 +197,18 @@ const MyOverview = () => {
           <SecondaryHeader>Your design systems</SecondaryHeader>
           <TemplatesList>
             {projects.map((item) => (
-              <Design
-                key={`${item._id}`}
-                onClick={() => {
-                  routeToProject(item);
-                }}
-              >
-                <TemplateImageWrapper>
-                  <img src={design1} alt={item.name} />
-                </TemplateImageWrapper>
-                <Title>{item.name}</Title>
-                <CardActionButton
-                  aria-label="fingerprint"
-                  color="primary"
-                  aria-controls={open ? 'basic-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? 'true' : undefined}
-                  onClick={(event) => handleProjectAction(event)}
-                >
-                  <MoreHorizIcon />
-                </CardActionButton>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                  }}
-                >
-                  <CustomMenuItem onClick={handleEditProject}>
-                    Edit
-                  </CustomMenuItem>
-                  <CustomMenuItem onClick={handleCopyProject}>
-                    Duplicate
-                  </CustomMenuItem>
-                  <CustomMenuItem onClick={handleDeleteProject}>
-                    Delete
-                  </CustomMenuItem>
-                </Menu>
-                {/* TBD: Confirm box for delete is required */}
-              </Design>
+              <ProjectItem
+                item={item}
+                key={item._id}
+                deleteProject={handleDeleteProject}
+                editProject={handleEditProject}
+              />
             ))}
           </TemplatesList>
         </DesignsCOntainer>
       </MainContainer>
       {isCreateProject ? (
-        <CreateProject
+        <CreateEditProject
           open={isCreateProject}
           close={() => {
             setIsCreateProject(false);
@@ -259,13 +217,34 @@ const MyOverview = () => {
           title={'Create Project'}
         />
       ) : null}
-      <ConfirmModal
-        open={confirmModalOpen}
-        title="Are you sure?"
-        message="Dummy message"
-        close={() => setConfirmModalOpen(false)}
-        confirm={handleConfirmDelte}
-      />
+
+      {editProject ? (
+        <CreateEditProject
+          open={!!editProject}
+          close={() => {
+            setEditProject(null);
+          }}
+          create={editSelectedProject}
+          title={'Edit Project'}
+          isEdit={true}
+          item={{
+            name: editProject.name,
+            description: editProject.description,
+          }}
+        />
+      ) : null}
+      {deleteProject && confirmModalOpen ? (
+        <ConfirmModal
+          open={confirmModalOpen}
+          title="Are you sure?"
+          message={`Want to delete "${deleteProject?.name}" project`}
+          close={() => {
+            setConfirmModalOpen(false);
+            setDeleteProject(null);
+          }}
+          confirm={handleConfirmDelte}
+        />
+      ) : null}
     </Container>
   );
 };

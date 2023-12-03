@@ -8,10 +8,14 @@ import { IconButton } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import align from '@utils/styles/align';
 import { Content, CreatePayload, Page, SubPage } from '@datatypes/project';
-import { getSafe, post, putSafe } from '@api/safe';
+import { deleteSafe, getSafe, post, putSafe } from '@api/safe';
 import { useEffect, useState } from 'react';
 import { OutputData } from '@editorjs/editorjs';
-import CreateModal from '@modules/common/components/createmodal';
+import CreateEditSubPage from '@modules/common/components/editcreatemodal';
+import MoreOption from '@modules/common/components/moreoption';
+import { Action, Option } from '@datatypes/common';
+import ConfirmModal from '@modules/common/components/confirmModal';
+import { useSnackbar } from '@modules/common/components/snackbar';
 
 type SubPageProps = {
   subPages: SubPage[];
@@ -20,6 +24,11 @@ type SubPageProps = {
   changeInSubPage: (id: string) => void;
   updateDetails: () => void;
 };
+
+const Options: Option[] = [
+  { label: 'Edit', value: Action.EDIT },
+  { label: 'Delete', value: Action.DELETE },
+];
 
 const EditorContainer = styled.div`
   display: flex;
@@ -72,13 +81,21 @@ const Tabs = styled.div`
 const Tab = styled.div<any>`
   font-size: 13px;
   color: ${color.gray900};
-  padding: ${spacing.small}px ${spacing.medium}px;
+  padding: ${spacing.small}px ${spacing.large}px ${spacing.small}px
+    ${spacing.medium}px;
   ${cursor.pointer};
   transition: border-color 0.1s ease;
   border-bottom: ${({ hasBorderBottom }) =>
     hasBorderBottom ? `3px solid ${color.purple400}` : 'none'};
   ${align.center};
   box-sizing: border-box;
+  position: relative;
+`;
+
+const More = styled.div`
+  position: absolute;
+  right: -5px;
+  top: 8px;
 `;
 
 export default function SubPagesSection({
@@ -88,9 +105,13 @@ export default function SubPagesSection({
   currentPage,
   updateDetails,
 }: SubPageProps) {
+  const { openSnackbar } = useSnackbar();
   const [currentTab, setCurrentTab] = useState(currentSubPage?._id);
   const [contentDetails, setContentDetails] = useState<Content | null>(null);
   const [iscreateSubPage, setIscreateSubPage] = useState(false);
+  const [editedSubPage, setEditedSubPage] = useState<SubPage | null>(null);
+  const [deletedSubPage, setDeletedSubPage] = useState<SubPage | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   useEffect(() => {
     if (currentSubPage) {
@@ -142,6 +163,52 @@ export default function SubPagesSection({
     }
   };
 
+  const handleMoreClick = (action: Action, item: SubPage) => {
+    if (action === Action.EDIT) {
+      setEditedSubPage(item);
+    } else {
+      setDeletedSubPage(item);
+      setIsConfirmModalOpen(true);
+    }
+  };
+
+  const handleConfirmDelte = async () => {
+    try {
+      setIsConfirmModalOpen(false);
+      const response = await deleteSafe(`/api/subpages/${deletedSubPage?._id}`);
+      setDeletedSubPage(null);
+      openSnackbar(
+        `Successfully deleted subpage "${response.name}"`,
+        'success'
+      );
+      updateDetails();
+    } catch (error) {
+      setIsConfirmModalOpen(false);
+      setDeletedSubPage(null);
+      console.log(error);
+    }
+  };
+
+  const updateSubPage = async (argPayload: CreatePayload) => {
+    try {
+      const payload = {
+        name: argPayload.name,
+        description: argPayload.description,
+        id: editedSubPage?._id,
+      };
+      const response = await putSafe('/api/subpages', payload);
+      setEditedSubPage(null);
+      openSnackbar(
+        `Successfully updated subpage "${response.name}"`,
+        'success'
+      );
+      updateDetails();
+    } catch (error) {
+      setEditedSubPage(null);
+      console.log(error);
+    }
+  };
+
   return (
     <TabsContainer>
       <Tabs>
@@ -155,6 +222,17 @@ export default function SubPagesSection({
             }}
           >
             {item.name}
+            {subPages.length > 1 ? (
+              <More>
+                <MoreOption
+                  options={Options}
+                  handleClick={(action) => {
+                    handleMoreClick(action, item);
+                  }}
+                  horizontal={true}
+                />
+              </More>
+            ) : null}
           </Tab>
         ))}
         <Tab>
@@ -175,8 +253,8 @@ export default function SubPagesSection({
           <ReichTextEditor data={contentDetails.data} setData={changeInData} />
         ) : null}
       </EditorContainer>
-      {
-        <CreateModal
+      {iscreateSubPage ? (
+        <CreateEditSubPage
           open={iscreateSubPage}
           close={() => {
             setIscreateSubPage(false);
@@ -184,7 +262,35 @@ export default function SubPagesSection({
           create={createNewSubPage}
           title={'Create sub page'}
         />
-      }
+      ) : null}
+
+      {editedSubPage ? (
+        <CreateEditSubPage
+          open={!!editedSubPage}
+          close={() => {
+            setEditedSubPage(null);
+          }}
+          item={{
+            name: editedSubPage.name,
+            description: editedSubPage.tooltip,
+          }}
+          create={updateSubPage}
+          title={'Edit sub page'}
+        />
+      ) : null}
+
+      {deletedSubPage && isConfirmModalOpen ? (
+        <ConfirmModal
+          open={isConfirmModalOpen}
+          title="Are you sure?"
+          message={`Want to delete "${deletedSubPage?.name}" subpage`}
+          close={() => {
+            setDeletedSubPage(null);
+            setIsConfirmModalOpen(false);
+          }}
+          confirm={handleConfirmDelte}
+        />
+      ) : null}
     </TabsContainer>
   );
 }

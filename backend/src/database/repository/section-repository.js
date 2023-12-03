@@ -15,8 +15,8 @@ class SectionRepository {
   }
 
   async UpdateSection({ id, name, description, pages }) {
-    const updatedSection = await SectionModel.findOneAndUpdate(
-      { localId: id },
+    const updatedSection = await SectionModel.findByIdAndUpdate(
+      id,
       { name, description, pages },
       { new: true }
     );

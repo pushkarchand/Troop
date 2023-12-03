@@ -29,7 +29,7 @@ class SectionService {
     const project = await this.projectrepository.FetchProjectById(projectId);
     project.sections.push(section._id);
     await this.projectrepository.UpdateProject({
-      id: project.localId,
+      id: project._id,
       name: project.name,
       description: project.description,
       sections: project.sections,
@@ -76,13 +76,13 @@ class SectionService {
     });
     if (subPages.length > 0) {
       // Delete subPages and it's content
-      await this.contentRepository.DeleteMany(subPagesIds);
-      await this.pageRepository.DeleteMany(subPagesIds);
+      await this.contentRepository.DeleteMany(subPages);
+      await this.pageRepository.DeleteMany(subPages);
     }
 
     // Delete pages
     await this.pageRepository.DeleteMany(pages);
-    await this.repository.DeleteSection(id);
+    const deletedSection = await this.repository.DeleteSection(id);
     return FormateData(deletedSection);
   }
 }

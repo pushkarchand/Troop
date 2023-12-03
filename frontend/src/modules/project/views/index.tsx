@@ -26,7 +26,6 @@ const MainContainer = styled.div`
 const ProjectLanding = () => {
   const [projectDetails, setProjectDetails] = useState<Project | null>(null);
   const { projectId, pageId, subPageId } = useParams();
-  const { projects }: AppContextType = useMainContext();
   const [noSection, setNoSection] = useState(false);
 
   const [currentPage, setCurrentPage] = useState<Page | null>(null);

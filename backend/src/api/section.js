@@ -23,7 +23,7 @@ module.exports = (app) => {
   app.put("/api/sections", async (req, res) => {
     try {
       const { id, name, description, pages } = req.body;
-      const { data } = await service.createSection({
+      const { data } = await service.updateSection({
         id,
         name,
         description,
@@ -41,7 +41,7 @@ module.exports = (app) => {
       const { data } = await service.findAllSections();
       res.json(data);
     } catch (error) {
-       console.log("error", error);
+      console.log("error", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -52,7 +52,7 @@ module.exports = (app) => {
       const { data } = await service.findSectionById(sectionId);
       res.json(data);
     } catch (error) {
-       console.log("error", error);
+      console.log("error", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -63,6 +63,7 @@ module.exports = (app) => {
       const { data } = await service.deleteSection(sectionId);
       res.json(data);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Internal server error" });
     }
   });

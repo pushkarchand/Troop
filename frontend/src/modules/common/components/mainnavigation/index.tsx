@@ -8,6 +8,7 @@ import UserAvatar from '@assets/images/avatar.png';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppContextType, useMainContext } from '@context/maincontext';
+import cursor from '@utils/styles/cursor';
 const Header = styled.nav`
   display: flex;
   width: 100%;
@@ -29,6 +30,7 @@ const RightSection = styled.div``;
 const MainLogo = styled.img`
   width: 100px;
   height: 50px;
+  ${cursor.pointer};
   margin-left: ${spacing.medium}px;
 `;
 

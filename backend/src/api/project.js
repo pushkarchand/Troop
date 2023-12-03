@@ -20,11 +20,12 @@ module.exports = (app) => {
 
   app.put("/api/projects", async (req, res) => {
     try {
-      const { id,name, description } = req.body;
+      const { id,name, description, sections } = req.body;
       const { data } = await service.updateProject({
         id,
         name,
         description,
+        sections
       });
       res.json(data);
     } catch (error) {

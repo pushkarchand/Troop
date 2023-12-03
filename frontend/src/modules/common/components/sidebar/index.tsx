@@ -6,8 +6,10 @@ import spacing from '@utils/styles/spacing';
 import Button from '@mui/material/Button';
 import { Add } from '@mui/icons-material';
 import { CreatePayload, Section } from '@datatypes/project';
-import CreateModal from '../createmodal';
-import { post } from '@api/safe';
+import CreateEditSection from '../editcreatemodal';
+import { deleteSafe, post, putSafe } from '@api/safe';
+import { useSnackbar } from '../snackbar';
+import ConfirmModal from '../confirmModal';
 
 type SectionProps = {
   sections: Section[];
@@ -44,8 +46,17 @@ const AddNewSction = styled.div`
   margin: ${spacing.medium}px 0;
 `;
 
-const SideBar = ({ sections, projectId, updateDetails, changeInPage }: SectionProps) => {
+const SideBar = ({
+  sections,
+  projectId,
+  updateDetails,
+  changeInPage,
+}: SectionProps) => {
+  const { openSnackbar } = useSnackbar();
   const [isCreateSection, setIsCreateSection] = useState(false);
+  const [editedSection, setEditedSection] = useState<Section | null>(null);
+  const [deletedSection, setDeletedSection] = useState<Section | null>(null);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const createNewSection = async (payload: CreatePayload) => {
     try {
@@ -58,6 +69,49 @@ const SideBar = ({ sections, projectId, updateDetails, changeInPage }: SectionPr
       setIsCreateSection(false);
     }
   };
+
+  const handleEdit = (item: Section) => {
+    setEditedSection(item);
+  };
+
+  const deleteSection = (item: Section) => {
+    setConfirmModalOpen(true);
+    setDeletedSection(item);
+  };
+
+  const editSelectedSection = async (item: CreatePayload) => {
+    try {
+      const payload = {
+        id: editedSection?._id,
+        name: item.name,
+        description: item.description,
+        pages: editedSection?.pages.map((page) => page._id),
+      };
+      setEditedSection(null);
+      const response = await putSafe('/api/sections', payload);
+      openSnackbar(`Successfully updated ${response.name}`, 'success');
+      updateDetails();
+    } catch (error) {
+      setEditedSection(null);
+      console.log(error);
+    }
+  };
+
+  const handleConfirmDelte = async () => {
+    try {
+      setDeletedSection(null);
+      const response = await deleteSafe(`/api/sections/${deletedSection?._id}`);
+      openSnackbar(
+        `Successfully deleted section "${response.name}"`,
+        'success'
+      );
+      updateDetails();
+    } catch (error) {
+      setDeletedSection(null);
+      console.log(error);
+    }
+  };
+
   return (
     <Container>
       <SectionsConationer>
@@ -82,18 +136,49 @@ const SideBar = ({ sections, projectId, updateDetails, changeInPage }: SectionPr
                 key={item._id}
                 updateDetails={updateDetails}
                 changeInPage={changeInPage}
+                editSection={handleEdit}
+                deleteSection={deleteSection}
               />
             ))}
         </>
       </SectionsConationer>
       {isCreateSection ? (
-        <CreateModal
+        <CreateEditSection
           open={isCreateSection}
           close={() => {
             setIsCreateSection(false);
           }}
           create={createNewSection}
           title={'Create Section'}
+        />
+      ) : null}
+
+      {editedSection ? (
+        <CreateEditSection
+          open={!!editedSection}
+          close={() => {
+            setEditedSection(null);
+          }}
+          create={editSelectedSection}
+          title={'Edit Section'}
+          isEdit={true}
+          item={{
+            name: editedSection.name,
+            description: editedSection.description,
+          }}
+        />
+      ) : null}
+
+      {deletedSection && confirmModalOpen ? (
+        <ConfirmModal
+          open={confirmModalOpen}
+          title="Are you sure?"
+          message={`Want to delete "${deleteSection?.name}" section`}
+          close={() => {
+            setConfirmModalOpen(false);
+            setDeletedSection(null);
+          }}
+          confirm={handleConfirmDelte}
         />
       ) : null}
     </Container>

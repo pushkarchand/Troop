@@ -15,11 +15,7 @@ class ProjectRepository {
   }
 
   async UpdateProject({ id, name, description, sections }) {
-    const updatedProject = await ProjectModel.findOneAndUpdate(
-      { localId: id },
-      { name, description, sections },
-      { new: true }
-    );
+    const updatedProject = await ProjectModel.findByIdAndUpdate(id, { name, description, sections }, { new: true });
 
     return updatedProject;
   }

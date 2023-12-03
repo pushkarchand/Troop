@@ -6,12 +6,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { CreatePayload } from 'src/types/project';
 import { TextField } from '@mui/material';
-import { useState } from 'react';
 import styled from '@emotion/styled';
 
 type CreateProps = {
   open: boolean;
   title: string;
+  isEdit?: boolean;
+  item?: CreatePayload;
   close: () => void;
   create: (value: CreatePayload) => void;
 };
@@ -23,49 +24,61 @@ const Box = styled.div`
   padding: 20px 0;
 `;
 
-export default function CreateModal({
+export default function EditCreateModal({
   open,
   title,
+  item,
   close,
   create,
 }: CreateProps) {
-  const [project, setProject] = useState<CreatePayload>({
-    name: '',
-    description: '',
+  const [genericField, setGenericField] = React.useState<CreatePayload>({
+    name: item?.name || '',
+    description: item?.description || '',
   });
-
   const handleValueChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setProject({ ...project, [e.target.name]: e.target.value });
+    setGenericField({ ...genericField, [e.target.name]: e.target.value });
   };
 
-  const createNewProject = () => {
-    create(project);
+  const createNewgenericField = () => {
+    create(genericField);
   };
 
   return (
-    <Dialog fullWidth={true} maxWidth={'sm'} open={open} onClose={close}>
+    <Dialog
+      fullWidth={true}
+      maxWidth={'sm'}
+      open={open}
+      onClose={(event: object, reason: string) => {
+        if (reason !== 'backdropClick') {
+          close();
+        }
+      }}
+      disableEscapeKeyDown
+    >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Box>
           <TextField
-            id="project-name"
+            id="generic-name"
             required
             label="Name"
             variant="outlined"
             fullWidth
             name="name"
+            value={genericField.name}
             onChange={handleValueChange}
           />
           <TextField
-            id="project-description"
+            id="generic-description"
             label="Description"
             placeholder="Description"
             multiline
             variant="outlined"
             fullWidth
             name="description"
+            value={genericField.description}
             onChange={handleValueChange}
           />
         </Box>
@@ -73,8 +86,8 @@ export default function CreateModal({
       <DialogActions>
         <Button
           variant="contained"
-          disabled={!project.name}
-          onClick={createNewProject}
+          disabled={!genericField.name}
+          onClick={createNewgenericField}
         >
           Save
         </Button>

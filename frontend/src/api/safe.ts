@@ -27,6 +27,15 @@ export const putSafe = async (url: string, payload: any) => {
   }
 };
 
+export const deleteSafe = async (url: string) => {
+  try {
+    const response = await axios.delete(`${baseUrl}${url}`, axiosOptions);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`Axios error! ${error.message}`);
+  }
+};
+
 export const getSafe = async (url: string) => {
   try {
     const response = await axios.get(`${baseUrl}${url}`, axiosOptions);

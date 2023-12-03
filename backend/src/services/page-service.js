@@ -24,7 +24,7 @@ class PageSevice {
     await this.subPageService.createSubPage({ name: "Implementation", tooltip: "Implementation", pageId: page._id }),
       sectionDetails.pages.push(page._id);
     await this.sectionRespository.UpdateSection({
-      id: sectionDetails.localId,
+      id: sectionDetails._id,
       name: sectionDetails.name,
       description: sectionDetails.description,
       pages: sectionDetails.pages,
@@ -67,8 +67,8 @@ class PageSevice {
     });
     if (subPages.length > 0) {
       // Delete subPages and it's content
-      await this.contentRepository.DeleteMany(subPagesIds);
-      await this.pageRepository.DeleteMany(subPagesIds);
+      await this.contentRepository.DeleteMany(subPages);
+      await this.subPageRepository.DeleteMany(subPages);
     }
     await this.repository.DeletePage(id);
     return FormateData(page);

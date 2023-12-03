@@ -35,7 +35,7 @@ class PageRepository {
   }
 
   async DeletePage(id) {
-    const deletedPage = await PageModel.findByIdAndDelete(id).populate("subpage").exec();
+    const deletedPage = await PageModel.findByIdAndDelete(id);
     return deletedPage;
   }
 

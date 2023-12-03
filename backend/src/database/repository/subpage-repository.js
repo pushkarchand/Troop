@@ -14,9 +14,9 @@ class SubPageRepository {
     return subPageResult;
   }
 
-  async UpdateSubPage({ id, name, tooltip, publishedOn, order }) {
-    const updateObject = { name, tooltip, publishedOn, order };
-    const updatedSubPage = await SubPageModel.findOneAndUpdate({ localId: id }, { ...updateObject }, { new: true });
+  async UpdateSubPage({ id, name, tooltip }) {
+    const updateObject = { name, tooltip };
+    const updatedSubPage = await SubPageModel.findByIdAndUpdate(id, { ...updateObject }, { new: true });
     return updatedSubPage;
   }
 

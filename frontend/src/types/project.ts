@@ -46,6 +46,7 @@ export type Page = {
 export type SubPage = {
   _id: string;
   name: string;
+  tooltip: string;
   pageId: string;
   localId: string;
   createdAt: string;

@@ -44,7 +44,8 @@ export default function ConfirmModal(props: ConfirmModalProps) {
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      fullWidth
+      fullWidth={true}
+      maxWidth={'xs'}
     >
       <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
       <DialogContent>
