@@ -7,6 +7,7 @@ import MyOverview from './modules/myoverview/views';
 import Project from '@modules/project/views';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { SnackbarProvider } from '@modules/common/components/snackbar';
+import { useAuth } from '@context/useauth';
 
 function App() {
   // Override Mui theme from the root here
@@ -37,30 +38,24 @@ function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider>
         <Routes>
-          <Route path="/">
+          <Route element={<RequireAuth auth={false}/>}>
             {/* public routes */}
             <Route path="login" element={<Login />} />
-
-            {/* we want to protect these routes */}
-            <Route element={<RequireAuth />}>
-              <Route path="/" element={<MyOverview />} />
-            </Route>
-            <Route element={<RequireAuth />}>
-              <Route path="/project" element={<Project />} />
-              <Route path="/project/:projectId" element={<Project />} />
-              <Route
-                path="/project/:projectId/:pageId"
-                element={<Project />}
-              />
-              <Route
-                path="/project/:projectId/:pageId/:subPageId"
-                element={<Project />}
-              />
-            </Route>
-
-            {/* catch all */}
-            <Route path="*" element={<PageNotFound />} />
           </Route>
+          {/* we want to protect these routes */}
+          <Route element={<RequireAuth auth={true}/>}>
+            <Route path="/" element={<MyOverview />} />
+            <Route path="/project" element={<Project />} />
+            <Route path="/project/:projectId" element={<Project />} />
+            <Route path="/project/:projectId/:pageId" element={<Project />} />
+            <Route
+              path="/project/:projectId/:pageId/:subPageId"
+              element={<Project />}
+            />
+          </Route>
+
+          {/* catch all */}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </SnackbarProvider>
     </ThemeProvider>

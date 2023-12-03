@@ -4,7 +4,7 @@ const UserAuth = require("./middlewares/auth");
 module.exports = (app) => {
   const service = new ProjectService();
 
-  app.post("/api/projects", async (req, res) => {
+  app.post("/api/projects", UserAuth, async (req, res) => {
     try {
       const { name, description } = req.body;
       const { data } = await service.CreateProject({
@@ -18,14 +18,14 @@ module.exports = (app) => {
     }
   });
 
-  app.put("/api/projects", async (req, res) => {
+  app.put("/api/projects", UserAuth, async (req, res) => {
     try {
-      const { id,name, description, sections } = req.body;
+      const { id, name, description, sections } = req.body;
       const { data } = await service.updateProject({
         id,
         name,
         description,
-        sections
+        sections,
       });
       res.json(data);
     } catch (error) {
@@ -34,7 +34,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/projects", async (req, res, next) => {
+  app.get("/api/projects", UserAuth, async (req, res, next) => {
     try {
       const { data } = await service.findAllProjects();
       res.json(data);
@@ -43,7 +43,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/projects/:id", async (req, res, next) => {
+  app.get("/api/projects/:id", UserAuth, async (req, res, next) => {
     try {
       const projectId = req.params.id;
       const { data } = await service.findProjectById(projectId);
@@ -54,7 +54,7 @@ module.exports = (app) => {
     }
   });
 
-  app.delete("/api/projects/:id", async (req, res, next) => {
+  app.delete("/api/projects/:id", UserAuth, async (req, res, next) => {
     try {
       const projectId = req.params.id;
       const { data } = await service.deleteProject(projectId);

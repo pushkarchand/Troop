@@ -4,7 +4,7 @@ const UserAuth = require("./middlewares/auth");
 module.exports = (app) => {
   const service = new PageService();
 
-  app.post("/api/pages", async (req, res) => {
+  app.post("/api/pages", UserAuth, async (req, res) => {
     try {
       const { name, description, sectionId } = req.body;
       const { data } = await service.createPage({
@@ -19,7 +19,7 @@ module.exports = (app) => {
     }
   });
 
-  app.put("/api/pages", async (req, res) => {
+  app.put("/api/pages", UserAuth, async (req, res) => {
     try {
       const { id, name, description, subPages } = req.body;
       const { data } = await service.updatePage({
@@ -35,7 +35,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/pages", async (req, res, next) => {
+  app.get("/api/pages", UserAuth, async (req, res, next) => {
     try {
       const { data } = await service.findAllPages();
       res.json(data);
@@ -45,7 +45,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/pages/:id", async (req, res, next) => {
+  app.get("/api/pages/:id", UserAuth, async (req, res, next) => {
     try {
       const pageId = req.params.id;
       const { data } = await service.findPageById(pageId);
@@ -56,7 +56,7 @@ module.exports = (app) => {
     }
   });
 
-  app.delete("/api/pages/:id", async (req, res, next) => {
+  app.delete("/api/pages/:id", UserAuth, async (req, res, next) => {
     try {
       const pageId = req.params.id;
       const { data } = await service.deletePage(pageId);

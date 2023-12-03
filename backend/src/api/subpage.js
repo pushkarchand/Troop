@@ -4,7 +4,7 @@ const UserAuth = require("./middlewares/auth");
 module.exports = (app) => {
   const service = new SubPageService();
 
-  app.post("/api/subpages", async (req, res) => {
+  app.post("/api/subpages",UserAuth, async (req, res) => {
     try {
       const { name, tooltip, pageId } = req.body;
       const { data } = await service.createSubPage({
@@ -19,7 +19,7 @@ module.exports = (app) => {
     }
   });
 
-  app.put("/api/subpages", async (req, res) => {
+  app.put("/api/subpages",UserAuth, async (req, res) => {
     try {
       const { id, name, tooltip, order } = req.body;
       const { data } = await service.updateSubPage({
@@ -34,7 +34,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/subpages", async (req, res, next) => {
+  app.get("/api/subpages",UserAuth, async (req, res, next) => {
     try {
       const { data } = await service.findAllSubPages();
       res.json(data);
@@ -44,7 +44,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/subpages/:id", async (req, res, next) => {
+  app.get("/api/subpages/:id",UserAuth, async (req, res, next) => {
     try {
       const pageId = req.params.id;
       const { data } = await service.findSubPageById(pageId);
@@ -55,7 +55,7 @@ module.exports = (app) => {
     }
   });
 
-  app.delete("/api/subpages/:id", async (req, res, next) => {
+  app.delete("/api/subpages/:id",UserAuth, async (req, res, next) => {
     try {
       const pageId = req.params.id;
       const { data } = await service.deleteSubPage(pageId);

@@ -4,7 +4,7 @@ const UserAuth = require("./middlewares/auth");
 module.exports = (app) => {
   const service = new SectionService();
 
-  app.post("/api/sections", async (req, res) => {
+  app.post("/api/sections", UserAuth, async (req, res) => {
     try {
       const { name, description, projectId } = req.body;
       const { data } = await service.createSection({
@@ -20,7 +20,7 @@ module.exports = (app) => {
     }
   });
 
-  app.put("/api/sections", async (req, res) => {
+  app.put("/api/sections", UserAuth, async (req, res) => {
     try {
       const { id, name, description, pages } = req.body;
       const { data } = await service.updateSection({
@@ -36,7 +36,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/sections", async (req, res, next) => {
+  app.get("/api/sections", UserAuth, async (req, res, next) => {
     try {
       const { data } = await service.findAllSections();
       res.json(data);
@@ -46,7 +46,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/sections/:id", async (req, res, next) => {
+  app.get("/api/sections/:id", UserAuth, async (req, res, next) => {
     try {
       const sectionId = req.params.id;
       const { data } = await service.findSectionById(sectionId);
@@ -57,7 +57,7 @@ module.exports = (app) => {
     }
   });
 
-  app.delete("/api/sections/:id", async (req, res, next) => {
+  app.delete("/api/sections/:id", UserAuth, async (req, res, next) => {
     try {
       const sectionId = req.params.id;
       const { data } = await service.deleteSection(sectionId);

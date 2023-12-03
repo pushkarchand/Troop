@@ -4,7 +4,7 @@ const UserAuth = require("./middlewares/auth");
 module.exports = (app) => {
   const service = new ContentService();
 
-  app.post("/api/contents", async (req, res) => {
+  app.post("/api/contents", UserAuth, async (req, res) => {
     try {
       const { data, subPageId } = req.body;
       const mainData = await service.createContent({
@@ -15,10 +15,10 @@ module.exports = (app) => {
     } catch (error) {
       console.log("error", error);
       res.status(500).json({ message: "Internal server error" });
-    } 
+    }
   });
 
-  app.put("/api/contents", async (req, res) => {
+  app.put("/api/contents", UserAuth, async (req, res) => {
     try {
       const { data, id } = req.body;
       const mainData = await service.updateContent({
@@ -32,8 +32,7 @@ module.exports = (app) => {
     }
   });
 
-
-  app.get("/api/contents/:id", async (req, res, next) => {
+  app.get("/api/contents/:id", UserAuth, async (req, res, next) => {
     try {
       const contentId = req.params.id;
       const { data } = await service.contentDetailsOnSubPageId(contentId);

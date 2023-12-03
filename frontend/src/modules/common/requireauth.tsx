@@ -1,15 +1,20 @@
 import { useMainContext } from '@context/maincontext';
 import React from 'react';
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
-const RequireAuth = () => {
+const RequireAuth = ({ auth }: { auth: boolean }) => {
   const { user }: any = useMainContext();
-  const location = useLocation();
 
-  return user ? (
-    <Outlet />
+  return auth ? (
+    user ? (
+      <Outlet />
+    ) : (
+      <Navigate to="/login" />
+    )
+  ) : user ? (
+    <Navigate to="/" />
   ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
+    <Outlet />
   );
 };
 

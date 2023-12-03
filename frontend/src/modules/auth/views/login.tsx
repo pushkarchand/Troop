@@ -75,7 +75,7 @@ const Login = () => {
         const token = decodeToken(response.token);
         setUser({ name: token.name, type: token.type });
         openSnackbar('Successfully logedin', 'success');
-        navigate('/');
+        navigate('/', { replace: true });
       } else if (response.message) {
         openSnackbar(response.message, 'error');
       }
