@@ -25,6 +25,10 @@ const setDefaultDataValues = (value: any) => {
 const EditorComponent = ({ data, setData }: EditorProps) => {
   const ejInstance: any = useRef();
 
+  useEffect(() => {
+    console.log('ejInstance', ejInstance);
+  }, [ejInstance]);
+
   const initEditor = () => {
     const editor = new EditorJS({
       holder: 'editorjs',
