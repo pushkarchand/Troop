@@ -26,10 +26,10 @@ const EditorComponent = ({ data, setData }: EditorProps) => {
   const ejInstance: any = useRef();
 
   useEffect(() => {
-    const initializeEditor = async () => {
+    const initializeEditor = () => {
       setTimeout(() => {
         initEditor();
-      }, 5000);
+      }, 1000);
     };
 
     initializeEditor();
