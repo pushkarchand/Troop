@@ -89,7 +89,6 @@ const ProjectLanding = () => {
       const firstSection = projectData?.sections[0];
       const firstPage = firstSection?.pages[0];
       const firstSubPage = firstPage?.subPages[0]; // Assuming there's at least one subPage
-      console.log(firstPage, firstSubPage);
       setCurrentPage(firstPage || null);
       setCurrentSubPage(firstSubPage || null);
       if (firstPage && firstSubPage) {

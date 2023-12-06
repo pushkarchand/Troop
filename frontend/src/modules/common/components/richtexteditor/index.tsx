@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useEffect, useRef } from 'react';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 import { EDITOR_JS_TOOLS } from './constants';
@@ -22,12 +22,8 @@ const setDefaultDataValues = (value: any) => {
   localStorage.setItem('defaultData', JSON.stringify(value));
 };
 
-const EditorComponent = ({ data, setData }: EditorProps) => {
-  const ejInstance: any = useRef();
-
-  useEffect(() => {
-    console.log('ejInstance', ejInstance);
-  }, [ejInstance]);
+const EditorComponent: React.FC<EditorProps> = ({ data, setData }) => {
+  const ejInstance = useRef<any>();
 
   const initEditor = () => {
     const editor = new EditorJS({
@@ -38,10 +34,7 @@ const EditorComponent = ({ data, setData }: EditorProps) => {
       data: data,
       onChange: async () => {
         if (editor && editor.saver && typeof editor.saver.save === 'function') {
-          // Check if `editor` and `editor.saver` are defined, and if `save` is a function
           let content = await editor.saver.save();
-          // setdata(JSON.parse(JSON.stringify(content)));
-          // setDefaultDataValues(content);
           setData(content);
         } else {
           console.error('Editor or saver is not properly initialized.');
@@ -52,8 +45,7 @@ const EditorComponent = ({ data, setData }: EditorProps) => {
     });
   };
 
-  // This will run only once
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (ejInstance.current === null) {
       initEditor();
     }
