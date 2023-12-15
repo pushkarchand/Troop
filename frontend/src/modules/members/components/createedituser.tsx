@@ -65,7 +65,7 @@ export default function CreateEditUser({
     confirmPassword: '',
     firstName: '',
     lastName: '',
-    type: '',
+    type: 'EDITOR',
   });
 
   useEffect(() => {
