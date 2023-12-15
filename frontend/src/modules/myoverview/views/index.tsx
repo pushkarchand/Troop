@@ -95,6 +95,7 @@ const Title = styled.div`
 const projectAPI = '/api/projects';
 
 const MyOverview = () => {
+  const { setLoading }: any = useMainContext();
   const { openSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [isCreateProject, setIsCreateProject] = useState(false);
@@ -105,6 +106,7 @@ const MyOverview = () => {
 
   const createProject = async (project: CreatePayload) => {
     try {
+      setLoading(true);
       setIsCreateProject(false);
       const respose: Project = await post(projectAPI, project);
       openSnackbar(`Successfully created ${respose.name}`, 'success');
@@ -113,6 +115,7 @@ const MyOverview = () => {
         routeToProject(respose);
       }, 200);
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
   };
@@ -123,11 +126,14 @@ const MyOverview = () => {
 
   const handleConfirmDelte = async () => {
     try {
+      setLoading(true);
       setConfirmModalOpen(false);
       const response = await deleteSafe(`${projectAPI}/${deleteProject?._id}`);
       openSnackbar(`Successfully deleted ${response.name}`, 'success');
       fetchProjects();
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       setConfirmModalOpen(false);
       openSnackbar(`Something went wrong`, 'error');
       console.log(error);
@@ -145,6 +151,7 @@ const MyOverview = () => {
 
   const editSelectedProject = async (item: CreatePayload) => {
     try {
+      setLoading(true);
       const payload = {
         id: editProject?._id,
         name: item.name,
@@ -154,9 +161,11 @@ const MyOverview = () => {
       setEditProject(null);
       await putSafe(projectAPI, payload);
       fetchProjects();
+      setLoading(false);
     } catch (error) {
       setEditProject(null);
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -166,17 +175,19 @@ const MyOverview = () => {
       <MainContainer>
         <Header>
           <WelcomeUser>Wellcome, {user?.name || 'user'}</WelcomeUser>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            size="small"
-            onClick={() => {
-              setIsCreateProject(true);
-            }}
-            sx={{ borderRadius: 20 }}
-          >
-            Create new design system
-          </Button>
+          {user?.type !== 'VIEWER' ? (
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              size="small"
+              onClick={() => {
+                setIsCreateProject(true);
+              }}
+              sx={{ borderRadius: 20 }}
+            >
+              Create new design system
+            </Button>
+          ) : null}
         </Header>
         <TemplatesContainer>
           <SecondaryHeader>Create design system</SecondaryHeader>
@@ -202,6 +213,7 @@ const MyOverview = () => {
                 key={item._id}
                 deleteProject={handleDeleteProject}
                 editProject={handleEditProject}
+                isViewer={user?.type === 'VIEWER'}
               />
             ))}
           </TemplatesList>

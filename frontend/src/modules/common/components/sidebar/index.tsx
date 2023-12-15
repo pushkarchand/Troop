@@ -10,6 +10,7 @@ import CreateEditSection from '../editcreatemodal';
 import { deleteSafe, post, putSafe } from '@api/safe';
 import { useSnackbar } from '../snackbar';
 import ConfirmModal from '../confirmModal';
+import { useMainContext } from '@context/maincontext';
 
 type SectionProps = {
   sections: Section[];
@@ -53,6 +54,7 @@ const SideBar = ({
   changeInPage,
 }: SectionProps) => {
   const { openSnackbar } = useSnackbar();
+  const { setLoading, user }: any = useMainContext();
   const [isCreateSection, setIsCreateSection] = useState(false);
   const [editedSection, setEditedSection] = useState<Section | null>(null);
   const [deletedSection, setDeletedSection] = useState<Section | null>(null);
@@ -60,11 +62,14 @@ const SideBar = ({
 
   const createNewSection = async (payload: CreatePayload) => {
     try {
+      setLoading(true);
+      setIsCreateSection(false);
       const createPagePayload = { ...payload, projectId };
       await post('/api/sections', createPagePayload);
-      setIsCreateSection(false);
       updateDetails();
+      setLoading(false);
     } catch (error: any) {
+      setLoading(false);
       console.log(error);
       setIsCreateSection(false);
     }
@@ -81,6 +86,7 @@ const SideBar = ({
 
   const editSelectedSection = async (item: CreatePayload) => {
     try {
+      setLoading(true);
       const payload = {
         id: editedSection?._id,
         name: item.name,
@@ -91,14 +97,17 @@ const SideBar = ({
       const response = await putSafe('/api/sections', payload);
       openSnackbar(`Successfully updated ${response.name}`, 'success');
       updateDetails();
+      setLoading(false);
     } catch (error) {
       setEditedSection(null);
       console.log(error);
+      setLoading(false);
     }
   };
 
   const handleConfirmDelte = async () => {
     try {
+      setLoading(true);
       setDeletedSection(null);
       const response = await deleteSafe(`/api/sections/${deletedSection?._id}`);
       openSnackbar(
@@ -106,28 +115,33 @@ const SideBar = ({
         'success'
       );
       updateDetails();
+      setLoading(false);
     } catch (error) {
       setDeletedSection(null);
       console.log(error);
+      setLoading(false);
     }
   };
 
   return (
     <Container>
       <SectionsConationer>
-        <AddNewSction>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            size="small"
-            onClick={() => {
-              setIsCreateSection(true);
-            }}
-            sx={{ borderRadius: 20 }}
-          >
-            Add new
-          </Button>
-        </AddNewSction>
+        {user?.type !== 'VIEWER' ? (
+          <AddNewSction>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              size="small"
+              onClick={() => {
+                setIsCreateSection(true);
+              }}
+              sx={{ borderRadius: 20 }}
+            >
+              Add new
+            </Button>
+          </AddNewSction>
+        ) : null}
+
         <>
           {sections &&
             sections.map((item) => (

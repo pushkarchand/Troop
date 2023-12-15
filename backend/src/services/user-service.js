@@ -62,6 +62,30 @@ class CustomerService {
     const existingCustomer = await this.repository.FinduserById(id);
     return FormateData(existingCustomer);
   }
+
+  async DeleteUser(id) {
+    const deletedUser = await this.repository.DeleteById(id);
+    return FormateData(deletedUser);
+  }
+
+  async UpdateUser(userInputs) {
+    const { firstName, lastName, email, type, id } = userInputs;
+
+    const page = await this.repository.UpdateUserById({
+      firstName,
+      lastName,
+      email,
+      type,
+      id,
+    });
+
+    return FormateData({ ...page });
+  }
+
+  async GetUsers() {
+    const usersList = await this.repository.FetchUsers();
+    return FormateData(usersList);
+  }
 }
 
 module.exports = CustomerService;

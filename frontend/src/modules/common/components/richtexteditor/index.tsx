@@ -5,6 +5,7 @@ import { EDITOR_JS_TOOLS } from './constants';
 
 type EditorProps = {
   data: OutputData;
+  readOnly: boolean;
   setData: (data: OutputData) => void;
 };
 
@@ -22,7 +23,7 @@ const setDefaultDataValues = (value: any) => {
   localStorage.setItem('defaultData', JSON.stringify(value));
 };
 
-const EditorComponent = ({ data, setData }: EditorProps) => {
+const EditorComponent = ({ data, setData, readOnly }: EditorProps) => {
   const ejInstance: any = useRef();
 
   useEffect(() => {
@@ -54,7 +55,7 @@ const EditorComponent = ({ data, setData }: EditorProps) => {
         }
       },
       tools: EDITOR_JS_TOOLS as any,
-      readOnly: false,
+      readOnly: readOnly,
     });
   };
 

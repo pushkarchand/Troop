@@ -22,7 +22,7 @@ export const useAuth = () => {
       return null;
     } else {
       // Token is still valid
-      return { type: token.type, name: token.name };
+      return { type: token.type, name: token.name, id: token._id };
     }
   }
 

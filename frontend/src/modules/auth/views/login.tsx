@@ -57,7 +57,7 @@ const LoginSection = styled.div`
 `;
 
 const Login = () => {
-  const { setUser }: any = useMainContext();
+  const { setUser, setLoading }: any = useMainContext();
   const { openSnackbar } = useSnackbar();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -69,17 +69,23 @@ const Login = () => {
 
   const handleLoginUser = async () => {
     try {
+      setLoading(true);
       const response = await loginUser({ email, password });
       if (response.token) {
         localStorage.setItem('alluvium_auth_token', response.token);
         const token = decodeToken(response.token);
-        setUser({ name: token.name, type: token.type });
-        openSnackbar('Successfully logedin', 'success');
-        navigate('/', { replace: true });
+        setUser({ name: token.name, type: token.type, id: token._id });
+        setTimeout(() => {
+          openSnackbar('Successfully logedin', 'success');
+          navigate('/');
+          setLoading(false);
+        }, 1000);
       } else if (response.message) {
+        setLoading(false);
         openSnackbar(response.message, 'error');
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
       openSnackbar('Invalid credentials', 'error');
     }

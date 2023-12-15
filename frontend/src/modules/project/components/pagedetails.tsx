@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import spacing from '@utils/styles/spacing';
 import SubPagesSection from './subpagessection';
 import { putSafe } from '@api/safe';
+import { useMainContext } from '@context/maincontext';
 
 const HeaderSection = styled.div`
   display: flex;
@@ -47,6 +48,7 @@ const PageDetails = ({
   changeInSubPage,
   updateDetails,
 }: PageProps) => {
+  const { user } = useMainContext();
   const [name, setName] = useState(page.name);
   const [description, setDescription] = useState(page.description);
 
@@ -80,6 +82,7 @@ const PageDetails = ({
             setName(e.target.value);
           }}
           onBlur={updatePageDetails}
+          disabled={user?.type === 'VIEWER'}
         />
         <BorderlessTextarea
           placeholder="Add description"
@@ -88,6 +91,7 @@ const PageDetails = ({
             setDescription(e.target.value);
           }}
           onBlur={updatePageDetails}
+          disabled={user?.type === 'VIEWER'}
         />
       </HeaderSection>
       {page.subPages ? (

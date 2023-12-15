@@ -13,9 +13,11 @@ import { getSafe } from '@api/safe';
 // Step 3: Create a context with the initial state
 export interface AppContextType {
   user: User | null;
-  setUser: (usr: User) => void;
   isLoggedIn: boolean;
   projects: Project[];
+  loading: boolean;
+  setLoading: (value: boolean) => void;
+  setUser: (usr: User) => void;
   fetchProjects: () => void;
   logout: () => void;
 }
@@ -43,6 +45,7 @@ const MainContextProvider: React.FC<MainContextProviderProps> = ({
 }) => {
   const [user, setUser] = useState<User | null>(useAuth());
   const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -69,8 +72,10 @@ const MainContextProvider: React.FC<MainContextProviderProps> = ({
       value={{
         user,
         projects,
-        setUser,
+        loading,
         isLoggedIn: !!user,
+        setLoading,
+        setUser,
         fetchProjects,
         logout,
       }}

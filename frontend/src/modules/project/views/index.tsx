@@ -8,7 +8,7 @@ import { getSafe } from '@api/safe';
 import { Page, Project, SubPage } from '@datatypes/project';
 import PageDetails from '../components/pagedetails';
 import EmptyPage from '../components/emptypage';
-import { AppContextType, useMainContext } from '@context/maincontext';
+import { useMainContext } from '@context/maincontext';
 
 const Container = styled.div`
   display: flex;
@@ -30,6 +30,7 @@ const ProjectLanding = () => {
 
   const [currentPage, setCurrentPage] = useState<Page | null>(null);
   const [currentSubPage, setCurrentSubPage] = useState<SubPage | null>(null);
+  const { setLoading, loading }: any = useMainContext();
 
   const navigate = useNavigate();
 
@@ -105,9 +106,12 @@ const ProjectLanding = () => {
 
   const fetchProjectDetails = async () => {
     try {
+      setLoading(true);
       const response = await getSafe(`/api/projects/${projectId}`);
       setProjectDetails({ ...response });
+      setLoading(false);
     } catch (error: any) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -129,9 +133,9 @@ const ProjectLanding = () => {
             changeInSubPage={changeInSubPage}
             updateDetails={fetchProjectDetails}
           />
-        ) : (
+        ) : !loading ? (
           <EmptyPage noSection={noSection} />
-        )}
+        ) : null}
       </MainContainer>
     </Container>
   );

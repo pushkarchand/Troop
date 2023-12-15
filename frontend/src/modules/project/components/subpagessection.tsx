@@ -16,6 +16,7 @@ import MoreOption from '@modules/common/components/moreoption';
 import { Action, Option } from '@datatypes/common';
 import ConfirmModal from '@modules/common/components/confirmModal';
 import { useSnackbar } from '@modules/common/components/snackbar';
+import { useMainContext } from '@context/maincontext';
 
 type SubPageProps = {
   subPages: SubPage[];
@@ -106,6 +107,7 @@ export default function SubPagesSection({
   updateDetails,
 }: SubPageProps) {
   const { openSnackbar } = useSnackbar();
+  const { setLoading, user }: any = useMainContext();
   const [currentTab, setCurrentTab] = useState(currentSubPage?._id);
   const [contentDetails, setContentDetails] = useState<Content | null>(null);
   const [iscreateSubPage, setIscreateSubPage] = useState(false);
@@ -122,10 +124,13 @@ export default function SubPagesSection({
 
   const fetchContentDetails = async () => {
     try {
+      setLoading(true);
       const response = await getSafe(`/api/contents/${currentSubPage?._id}`);
       setContentDetails(response);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -149,16 +154,19 @@ export default function SubPagesSection({
 
   const createNewSubPage = async (payload: CreatePayload) => {
     try {
+      setLoading(true);
+      setIscreateSubPage(false);
       const data = {
         name: payload.name,
         tooltip: payload.description,
         pageId: currentPage._id,
       };
       await post(`/api/subpages`, data);
-      setIscreateSubPage(false);
       updateDetails();
+      setLoading(false);
     } catch (error) {
       setIscreateSubPage(false);
+      setLoading(false);
       console.log(error);
     }
   };
@@ -174,6 +182,7 @@ export default function SubPagesSection({
 
   const handleConfirmDelte = async () => {
     try {
+      setLoading(true);
       setIsConfirmModalOpen(false);
       const response = await deleteSafe(`/api/subpages/${deletedSubPage?._id}`);
       setDeletedSubPage(null);
@@ -182,13 +191,15 @@ export default function SubPagesSection({
         'success'
       );
       updateDetails();
+      setLoading(false);
     } catch (error) {
       setIsConfirmModalOpen(false);
       setDeletedSubPage(null);
+      setLoading(false);
       console.log(error);
     }
   };
-  
+
   const updateSubPage = async (argPayload: CreatePayload) => {
     try {
       const payload = {
@@ -196,6 +207,7 @@ export default function SubPagesSection({
         tooltip: argPayload.description,
         id: editedSubPage?._id,
       };
+      setLoading(true);
       const response = await putSafe('/api/subpages', payload);
       setEditedSubPage(null);
       openSnackbar(
@@ -203,7 +215,9 @@ export default function SubPagesSection({
         'success'
       );
       updateDetails();
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       setEditedSubPage(null);
       console.log(error);
     }
@@ -222,7 +236,7 @@ export default function SubPagesSection({
             }}
           >
             {item.name}
-            {subPages.length > 1 ? (
+            {subPages.length > 1 && user?.type !== 'VIEWER' ? (
               <More>
                 <MoreOption
                   options={Options}
@@ -235,22 +249,28 @@ export default function SubPagesSection({
             ) : null}
           </Tab>
         ))}
-        <Tab>
-          <IconButton
-            aria-label="delete"
-            size="small"
-            onClick={() => {
-              setIscreateSubPage(true);
-            }}
-          >
-            <Add fontSize="inherit" />
-          </IconButton>
-        </Tab>
+        {user?.type !== 'VIEWER' ? (
+          <Tab>
+            <IconButton
+              aria-label="delete"
+              size="small"
+              onClick={() => {
+                setIscreateSubPage(true);
+              }}
+            >
+              <Add fontSize="inherit" />
+            </IconButton>
+          </Tab>
+        ) : null}
       </Tabs>
 
       <EditorContainer>
         {contentDetails && currentTab === contentDetails.subPageId ? (
-          <ReichTextEditor data={contentDetails.data} setData={changeInData} />
+          <ReichTextEditor
+            data={contentDetails.data}
+            setData={changeInData}
+            readOnly={user?.type === 'VIEWER'}
+          />
         ) : null}
       </EditorContainer>
       {iscreateSubPage ? (

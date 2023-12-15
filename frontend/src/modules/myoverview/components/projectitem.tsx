@@ -11,6 +11,7 @@ import { Action, Option } from '@datatypes/common';
 
 type Props = {
   item: Project;
+  isViewer: boolean
   deleteProject: (item: Project) => void;
   editProject: (item: Project) => void;
 };
@@ -56,7 +57,7 @@ const options: Option[] = [
   },
 ];
 
-const ProjectItem = ({ item, editProject, deleteProject }: Props) => {
+const ProjectItem = ({ item, editProject, deleteProject, isViewer }: Props) => {
   const navigate = useNavigate();
   const routeToProject = () => {
     navigate(`/project/${item.localId}`);
@@ -77,7 +78,13 @@ const ProjectItem = ({ item, editProject, deleteProject }: Props) => {
       </TemplateImageWrapper>
       <Title>{item.name}</Title>
       <ActionRow>
-        <MoreOption options={options} handleClick={handleAction} horizontal={true}/>
+        {!isViewer ? (
+          <MoreOption
+            options={options}
+            handleClick={handleAction}
+            horizontal={true}
+          />
+        ) : null}
       </ActionRow>
     </ProjectContainer>
   );

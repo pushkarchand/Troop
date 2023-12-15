@@ -40,7 +40,7 @@ type Props = {
 
 function MainNavigation({ showProjects }: Props) {
   const { projectId } = useParams();
-  const { projects, logout }: AppContextType = useMainContext();
+  const { projects, logout, user }: AppContextType = useMainContext();
   const [value, setvalue] = useState<string>(projectId || '');
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -56,8 +56,8 @@ function MainNavigation({ showProjects }: Props) {
     console.log('edit profile from here');
   };
 
-  const handleMyAccount = () => {
-    console.log('edit member page or other settings');
+  const handleMembers = () => {
+    navigate('/members');
   };
 
   return (
@@ -110,7 +110,9 @@ function MainNavigation({ showProjects }: Props) {
           }}
         >
           <MenuItem onClick={handleProfile}>Profile</MenuItem>
-          <MenuItem onClick={handleMyAccount}>My account</MenuItem>
+          {user?.type !== 'VIEWER' ? (
+            <MenuItem onClick={handleMembers}>Members</MenuItem>
+          ) : null}
           <MenuItem onClick={logout}>Logout</MenuItem>
         </Menu>
       </RightSection>

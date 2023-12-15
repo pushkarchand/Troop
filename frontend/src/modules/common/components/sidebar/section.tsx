@@ -14,6 +14,7 @@ import { Action, Option } from '@datatypes/common';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ConfirmModal from '../confirmModal';
 import { useSnackbar } from '../snackbar';
+import { useMainContext } from '@context/maincontext';
 
 type Props = {
   item: Section;
@@ -89,6 +90,7 @@ const SectionComponent = ({
   deleteSection,
 }: Props) => {
   const { openSnackbar } = useSnackbar();
+  const { setLoading, user }: any = useMainContext();
   const { projectId, pageId } = useParams();
   const navigate = useNavigate();
   const [isCreatePage, setIsCreatePage] = useState(false);
@@ -97,13 +99,16 @@ const SectionComponent = ({
 
   const createNewPage = async (payload: CreatePayload) => {
     try {
+      setLoading(true);
+      setIsCreatePage(false);
       const createPagePayload = { ...payload, sectionId: item._id };
       await post('/api/pages', createPagePayload);
       updateDetails();
-      setIsCreatePage(false);
+      setLoading(false);
     } catch (error: any) {
       console.log(error);
       setIsCreatePage(false);
+      setLoading(false);
     }
   };
 
@@ -133,13 +138,16 @@ const SectionComponent = ({
 
   const handleConfirmDelete = async () => {
     try {
-      setConfirmModalOpen(false)
-      const response= await deleteSafe(`/api/pages/${deletedPage?._id}`)
-      setDeletedPage(null)
+      setLoading(true);
+      setConfirmModalOpen(false);
+      const response = await deleteSafe(`/api/pages/${deletedPage?._id}`);
+      setDeletedPage(null);
       openSnackbar(`Successfully deleted page "${response.name}"`, 'success');
-      updateDetails()
+      updateDetails();
+      setLoading(false);
     } catch (error) {
-      setDeletedPage(null)
+      setLoading(false);
+      setDeletedPage(null);
     }
   };
 
@@ -147,23 +155,29 @@ const SectionComponent = ({
     <SectionContainer>
       <Header>
         <Title>{item.name}</Title>
-        <Tooltip title="Add new page">
-          <IconButton
-            onClick={() => {
-              setIsCreatePage(true);
-            }}
-          >
-            <AddIcon />
-          </IconButton>
-        </Tooltip>
-        <More>
-          <MoreOption
-            options={Options}
-            handleClick={(action: Action) => {
-              handleClick(action, item);
-            }}
-          />
-        </More>
+        {user?.type !== 'VIEWER' ? (
+          <Tooltip title="Add new page">
+            <IconButton
+              onClick={() => {
+                setIsCreatePage(true);
+              }}
+            >
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
+
+        {user?.type !== 'VIEWER' ? (
+          <More>
+            {' '}
+            <MoreOption
+              options={Options}
+              handleClick={(action: Action) => {
+                handleClick(action, item);
+              }}
+            />
+          </More>
+        ) : null}
       </Header>
       <PagesConatiner>
         {item.pages.map((page: Page) => (
@@ -175,17 +189,19 @@ const SectionComponent = ({
             }}
           >
             {page.name}
-            <More>
-              <IconButton
-                aria-haspopup="true"
-                onClick={() => {
-                  deletePage(page);
-                }}
-                size="small"
-              >
-                <DeleteOutlineIcon />
-              </IconButton>
-            </More>
+            {user?.type !== 'VIEWER' ? (
+              <More>
+                <IconButton
+                  aria-haspopup="true"
+                  onClick={() => {
+                    deletePage(page);
+                  }}
+                  size="small"
+                >
+                  <DeleteOutlineIcon />
+                </IconButton>
+              </More>
+            ) : null}
           </PageTitle>
         ))}
       </PagesConatiner>

@@ -28,6 +28,21 @@ class UserRepository {
     const existingUser = await UserModel.findById(id);
     return existingUser;
   }
+
+  async DeleteById(id) {
+    const deletedUser = await UserModel.findByIdAndDelete(id);
+    return deletedUser;
+  }
+
+  async UpdateUserById({ firstName, lastName, email, type, id }) {
+    const updatedPage = await UserModel.findByIdAndUpdate(id, { firstName, lastName, email, type }, { new: true });
+    return updatedPage;
+  }
+
+  async FetchUsers() {
+    const users = await UserModel.find({});
+    return users;
+  }
 }
 
 module.exports = UserRepository;
