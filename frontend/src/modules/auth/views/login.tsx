@@ -74,8 +74,8 @@ const Login = () => {
       if (response.token) {
         localStorage.setItem('alluvium_auth_token', response.token);
         const token = decodeToken(response.token);
-        setUser({ name: token.name, type: token.type, id: token._id });
         setTimeout(() => {
+          setUser({ name: token.name, type: token.type, id: token._id });
           openSnackbar('Successfully logedin', 'success');
           navigate('/');
           setLoading(false);
