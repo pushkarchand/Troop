@@ -249,7 +249,7 @@ const MyOverview = () => {
         <ConfirmModal
           open={confirmModalOpen}
           title="Are you sure?"
-          message={`Want to delete "${deleteProject?.name}" project`}
+          message={`Are you sure you want to delete "${deleteProject?.name}" design system`}
           close={() => {
             setConfirmModalOpen(false);
             setDeleteProject(null);

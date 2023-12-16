@@ -10,6 +10,7 @@ import CreateEditUser from './components/createedituser';
 import { useMainContext } from '@context/maincontext';
 import ConfirmModal from '@modules/common/components/confirmModal';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from '@modules/common/components/snackbar';
 
 const Container = styled.div`
   display: flex;
@@ -34,8 +35,9 @@ const HeaderRow = styled.div`
 
 const MembersLanding = () => {
   const navigate = useNavigate();
+  const { openSnackbar } = useSnackbar();
   const { setLoading, user } = useMainContext();
-  const [memebersList, setMemebersList] = useState<User[]>([]);
+  const [membersList, setMembersList] = useState<User[]>([]);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
   const [editableUser, seteditableUser] = useState<User | null>(null);
   const [deletableUser, setDeletableUser] = useState<User | null>(null);
@@ -53,7 +55,7 @@ const MembersLanding = () => {
     try {
       setLoading(true);
       const data = await getSafe('/api/users');
-      setMemebersList(data);
+      setMembersList(data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -67,6 +69,10 @@ const MembersLanding = () => {
       setLoading(true);
       const payload = { ...user, phone: '' };
       await post('/signup', payload);
+      openSnackbar(
+        `Successfully added "${payload.firstName} ${payload.lastName}" member`,
+        'success'
+      );
       fetchMembers();
     } catch (error: any) {
       console.log(error);
@@ -90,6 +96,11 @@ const MembersLanding = () => {
         setLoading(true);
         deletableUser._id;
         await deleteSafe(`/api/users/${deletableUser._id}`);
+        openSnackbar(
+          `Successfully removed "${deletableUser.firstName} ${deletableUser.lastName}" member`,
+          'success'
+        );
+        setDeletableUser(null);
         fetchMembers();
       }
     } catch (error) {
@@ -109,7 +120,11 @@ const MembersLanding = () => {
       };
       seteditableUser(null);
       setLoading(true);
-      await putSafe('/api/users', payload);
+      const response = await putSafe('/api/users', payload);
+      openSnackbar(
+        `Successfully updated "${response.firstName} ${response.lastName}" member`,
+        'success'
+      );
       fetchMembers();
     } catch (error: any) {
       console.log(error);
@@ -134,7 +149,7 @@ const MembersLanding = () => {
             Add new member
           </Button>
         </HeaderRow>
-        <Table users={memebersList} deletUser={deletUser} editUser={editUser} />
+        <Table users={membersList} deletUser={deletUser} editUser={editUser} />
         {isCreatingUser ? (
           <CreateEditUser
             open={isCreatingUser}
@@ -168,7 +183,7 @@ const MembersLanding = () => {
           <ConfirmModal
             open={!!deletableUser}
             title={'Delete member'}
-            message={`Want to delete "${deletableUser.firstName} ${deletableUser.lastName}" user`}
+            message={`Are you sure you want to delete "${deletableUser.firstName} ${deletableUser.lastName}" member`}
             confirm={deleteSelectedUser}
             close={() => {
               setDeleteConfirm(false);

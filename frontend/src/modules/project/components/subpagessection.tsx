@@ -303,7 +303,7 @@ export default function SubPagesSection({
         <ConfirmModal
           open={isConfirmModalOpen}
           title="Are you sure?"
-          message={`Want to delete "${deletedSubPage?.name}" subpage`}
+          message={`Are you sure you want to delete "${deletedSubPage?.name}" subpage`}
           close={() => {
             setDeletedSubPage(null);
             setIsConfirmModalOpen(false);

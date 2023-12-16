@@ -187,7 +187,7 @@ const SideBar = ({
         <ConfirmModal
           open={confirmModalOpen}
           title="Are you sure?"
-          message={`Want to delete "${deleteSection?.name}" section`}
+          message={`Are you sure you want to delete "${deleteSection?.name}" section`}
           close={() => {
             setConfirmModalOpen(false);
             setDeletedSection(null);

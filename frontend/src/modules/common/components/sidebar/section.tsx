@@ -219,7 +219,7 @@ const SectionComponent = ({
         <ConfirmModal
           open={confirmModalOpen}
           title="Are you sure?"
-          message={`Want to delete "${deletedPage?.name}" page`}
+          message={`Are you sure you want to delete "${deletedPage?.name}" page`}
           close={() => {
             setConfirmModalOpen(false);
             setDeletedPage(null);
