@@ -71,7 +71,7 @@ class CustomerService {
   async UpdateUser(userInputs) {
     const { firstName, lastName, email, type, id } = userInputs;
 
-    const page = await this.repository.UpdateUserById({
+    const updatedUser = await this.repository.UpdateUserById({
       firstName,
       lastName,
       email,
@@ -79,7 +79,7 @@ class CustomerService {
       id,
     });
 
-    return FormateData({ ...page });
+    return FormateData({ ...updatedUser._doc });
   }
 
   async GetUsers() {
